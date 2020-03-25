@@ -1,0 +1,36 @@
+/*
+ * Copyright (c) 2008-2020
+ * LANIT
+ * All rights reserved.
+ *
+ * This product and related documentation are protected by copyright and
+ * distributed under licenses restricting its use, copying, distribution, and
+ * decompilation. No part of this product or related documentation may be
+ * reproduced in any form by any means without prior written authorization of
+ * LANIT and its licensors, if any.
+ *
+ * $
+ */
+package ru.lanit.bpm.jedu.hrjedi.app;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.domain.EntityScan;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
+
+@SpringBootApplication
+@ComponentScan(basePackages = "ru.lanit.bpm.jedu.hrjedi")
+@EnableJpaRepositories(basePackages = "ru.lanit.bpm.jedu.hrjedi.repository")
+@EntityScan(basePackages = "ru.lanit.bpm.jedu.hrjedi.model")
+public class HrJediApplication {
+    private static final Logger LOGGER = LoggerFactory.getLogger(HrJediApplication.class);
+
+    public static void main(String[] args) {
+
+        SpringApplication.run(HrJediApplication.class, args);
+    }
+
+}
