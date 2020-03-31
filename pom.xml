@@ -3,7 +3,11 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>2.2.6.RELEASE</version>
+    </parent>
     <groupId>ru.lanit.bpm.jedu</groupId>
     <artifactId>hr-jedi</artifactId>
     <version>CURRENT</version>
@@ -12,13 +16,18 @@
     <properties>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
+
+        <spring-boot-starter-log4j2.version>2.2.6.RELEASE</spring-boot-starter-log4j2.version>
+        <spring-boot-starter-security.version>2.2.6.RELEASE</spring-boot-starter-security.version>
+        <commons-lang.version>2.6</commons-lang.version>
+        <jjwt.version>0.9.0</jjwt.version>
+        <javax.servlet-api.version>3.0.1</javax.servlet-api.version>
+        <unitils-easymock.version>3.4.6</unitils-easymock.version>
+        <graphql-spring-boot-starter.version>3.6.0</graphql-spring-boot-starter.version>
+        <graphql-java-tools.version>3.2.0</graphql-java-tools.version>
+        <commons-lang3.version>3.9</commons-lang3.version>
     </properties>
 
-    <parent>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-starter-parent</artifactId>
-        <version>2.2.2.RELEASE</version>
-    </parent>
 
     <dependencies>
         <dependency>
@@ -38,8 +47,8 @@
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-log4j</artifactId>
-            <version>1.2.5.RELEASE</version>
+            <artifactId>spring-boot-starter-log4j2</artifactId>
+            <version>${spring-boot-starter-log4j2.version}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -57,23 +66,23 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-security</artifactId>
-            <version>1.5.15.RELEASE</version>
+            <version>${spring-boot-starter-security.version}</version>
         </dependency>
 
         <dependency>
             <groupId>commons-lang</groupId>
             <artifactId>commons-lang</artifactId>
-            <version>2.6</version>
+            <version>${commons-lang.version}</version>
         </dependency>
         <dependency>
             <groupId>io.jsonwebtoken</groupId>
             <artifactId>jjwt</artifactId>
-            <version>0.9.0</version>
+            <version>${jjwt.version}</version>
         </dependency>
         <dependency>
             <groupId>javax.servlet</groupId>
             <artifactId>javax.servlet-api</artifactId>
-            <version>3.0.1</version>
+            <version>${javax.servlet-api.version}</version>
             <scope>provided</scope>
         </dependency>
 
@@ -85,25 +94,25 @@
         <dependency>
             <groupId>org.unitils</groupId>
             <artifactId>unitils-easymock</artifactId>
-            <version>3.4.6</version>
+            <version>${unitils-easymock.version}</version>
             <scope>test</scope>
         </dependency>
 
         <dependency>
             <groupId>com.graphql-java</groupId>
             <artifactId>graphql-spring-boot-starter</artifactId>
-            <version>3.6.0</version>
+            <version>${graphql-spring-boot-starter.version}</version>
         </dependency>
         <dependency>
             <groupId>com.graphql-java</groupId>
             <artifactId>graphql-java-tools</artifactId>
-            <version>3.2.0</version>
+            <version>${graphql-java-tools.version}</version>
         </dependency>
 
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
-            <version>3.9</version>
+            <version>${commons-lang3.version}</version>
         </dependency>
 
     </dependencies>
