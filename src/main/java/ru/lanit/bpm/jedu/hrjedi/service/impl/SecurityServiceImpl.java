@@ -24,6 +24,7 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.lanit.bpm.jedu.hrjedi.model.security.Role;
 import ru.lanit.bpm.jedu.hrjedi.model.security.RoleName;
 import ru.lanit.bpm.jedu.hrjedi.model.Employee;
+import ru.lanit.bpm.jedu.hrjedi.model.security.State;
 import ru.lanit.bpm.jedu.hrjedi.repository.RoleRepository;
 import ru.lanit.bpm.jedu.hrjedi.repository.EmployeeRepository;
 import ru.lanit.bpm.jedu.hrjedi.security.jwt.JwtProvider;
@@ -69,6 +70,7 @@ public class SecurityServiceImpl implements SecurityService {
 
         Employee user = new Employee(trimmedLoginInLowerCase, passwordEncoder.encode(password), email);
         user.setRoles(validateAndGetRegisteredRoles(rolesStrings));
+        user.setState(State.ACTIVE); // FIXME: Уточнить значение по-умолчанию
         employeeRepository.save(user);
     }
 
