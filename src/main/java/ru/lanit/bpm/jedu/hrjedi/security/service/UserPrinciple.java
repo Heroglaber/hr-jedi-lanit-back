@@ -17,7 +17,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-import ru.lanit.bpm.jedu.hrjedi.model.security.User;
+import ru.lanit.bpm.jedu.hrjedi.model.Employee;
 
 import java.util.Collection;
 import java.util.List;
@@ -98,7 +98,7 @@ public class UserPrinciple implements UserDetails {
         return Objects.equals(id, user.id);
     }
 
-    public static UserPrinciple build(User user) {
+    public static UserPrinciple build(Employee user) {
             List<GrantedAuthority> authorities = user.getRoles().stream().map(role ->
                     new SimpleGrantedAuthority(role.getName().name())
             ).collect(Collectors.toList());

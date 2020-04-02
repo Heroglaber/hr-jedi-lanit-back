@@ -23,8 +23,8 @@ import org.unitils.easymock.EasyMockUnitils;
 import org.unitils.easymock.annotation.Mock;
 import ru.lanit.bpm.jedu.hrjedi.model.security.Role;
 import ru.lanit.bpm.jedu.hrjedi.model.security.RoleName;
-import ru.lanit.bpm.jedu.hrjedi.model.security.User;
-import ru.lanit.bpm.jedu.hrjedi.repository.UserRepository;
+import ru.lanit.bpm.jedu.hrjedi.model.Employee;
+import ru.lanit.bpm.jedu.hrjedi.repository.EmployeeRepository;
 import ru.lanit.bpm.jedu.hrjedi.service.impl.SecurityServiceImpl;
 
 import java.util.Collection;
@@ -41,16 +41,16 @@ public class SecurityServiceImplTest {
     SecurityServiceImpl securityService = new SecurityServiceImpl();
 
     @Mock
-    UserRepository userRepository;
+    EmployeeRepository employeeRepository;
 
     @Before
     public void setUp(){
-        securityService.setUserRepository(userRepository);
+        securityService.setEmployeeRepository(employeeRepository);
     }
 
     @Test
     public void getNumberOfAdmins(){
-        EasyMock.expect(userRepository.findAll())
+        EasyMock.expect(employeeRepository.findAll())
                 .andReturn(asList(
                         user(singleton(role(ROLE_USER))),
                         user(singleton(role(ROLE_OMNI))),
@@ -68,8 +68,8 @@ public class SecurityServiceImplTest {
 
 
 
-    private User user(Collection<Role> roles){
-        User user = new User();
+    private Employee user(Collection<Role> roles){
+        Employee user = new Employee();
         user.setRoles(new HashSet<>(roles));
 
         return user;

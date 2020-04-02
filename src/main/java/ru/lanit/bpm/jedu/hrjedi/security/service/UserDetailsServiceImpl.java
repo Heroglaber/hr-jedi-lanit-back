@@ -19,22 +19,20 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.lanit.bpm.jedu.hrjedi.model.security.User;
-import ru.lanit.bpm.jedu.hrjedi.repository.UserRepository;
+import ru.lanit.bpm.jedu.hrjedi.model.Employee;
+import ru.lanit.bpm.jedu.hrjedi.repository.EmployeeRepository;
 
 @Service
 public class UserDetailsServiceImpl implements UserDetailsService {
     @Autowired
-    UserRepository userRepository;
+    EmployeeRepository employeeRepository;
 
     @Override
     @Transactional
-    public UserDetails loadUserByUsername(String username)
-            throws UsernameNotFoundException {
-
-        User user = userRepository.findByLogin(username.trim().toLowerCase())
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        Employee user = employeeRepository.findByLogin(username.trim().toLowerCase())
                   .orElseThrow(() ->
-                        new UsernameNotFoundException("User Not Found with -> username or email : " + username)
+                        new UsernameNotFoundException("User Not Found with -> username: " + username)
         );
 
         return UserPrinciple.build(user);

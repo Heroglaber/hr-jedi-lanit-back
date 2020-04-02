@@ -11,17 +11,12 @@
  *
  * $
  */
-package ru.lanit.bpm.jedu.hrjedi.repository;
+package ru.lanit.bpm.jedu.hrjedi.service.exception;
 
-import org.springframework.data.jpa.repository.JpaRepository;
-import ru.lanit.bpm.jedu.hrjedi.model.security.User;
+public class EmployeeRegistrationException extends RuntimeException {
+    private static final long serialVersionUID = 1633754699258321987L;
 
-import java.util.Optional;
-
-public interface UserRepository extends JpaRepository<User, Long> {
-    Optional<User> findByLogin(String login);
-
-    Boolean existsByLogin(String login);
-
-    Boolean existsByEmail(String email);
+    public EmployeeRegistrationException(String message) {
+        super(message);
+    }
 }

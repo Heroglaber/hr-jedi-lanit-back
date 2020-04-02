@@ -11,22 +11,24 @@
  *
  * $
  */
-package ru.lanit.bpm.jedu.hrjedi.model.security;
+package ru.lanit.bpm.jedu.hrjedi.model;
 
 import org.hibernate.annotations.NaturalId;
+import ru.lanit.bpm.jedu.hrjedi.model.security.Role;
+import ru.lanit.bpm.jedu.hrjedi.model.security.State;
 
 import javax.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
 
 @Entity
-@Table(name = "USER_ACCOUNT", uniqueConstraints = {
+@Table(name = "EMPLOYEE", uniqueConstraints = {
         @UniqueConstraint(columnNames = {
                 "LOGIN"
         })
 
 })
-public class User {
+public class Employee {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -39,18 +41,18 @@ public class User {
     private String email;
 
     @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(name = "USER_ROLE",
-    joinColumns = @JoinColumn(name = "USER_ID"),
+    @JoinTable(name = "EMPLOYEE_ROLE",
+    joinColumns = @JoinColumn(name = "EMPLOYEE_ID"),
     inverseJoinColumns = @JoinColumn(name = "ROLE_ID"))
     private Set<Role> roles = new HashSet<>();
 
     @Enumerated(value = EnumType.STRING)
     private State state;
 
-    public User() {
+    public Employee() {
     }
 
-    public User(String login, String hashPassword, String email){
+    public Employee(String login, String hashPassword, String email){
         this.login=login;
         this.hashPassword = hashPassword;
         this.email = email;
