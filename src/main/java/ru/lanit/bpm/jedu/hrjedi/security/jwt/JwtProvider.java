@@ -26,7 +26,10 @@ import org.springframework.stereotype.Component;
 import ru.lanit.bpm.jedu.hrjedi.security.service.UserPrinciple;
 
 import java.io.Serializable;
+import java.time.Instant;
 import java.util.Date;
+
+import static java.time.temporal.ChronoUnit.SECONDS;
 
 @Component
 public class JwtProvider {
@@ -40,19 +43,19 @@ public class JwtProvider {
         UserPrinciple userPrincipal = (UserPrinciple) authentication.getPrincipal();
 
         return Jwts.builder()
-                .setSubject(userPrincipal.getUsername())
-                .setIssuedAt(new Date())
-                .setExpiration(new Date((new Date()).getTime() + jwtExpiration))
-                .claim("currentUser", toJsonString(userPrincipal))
-                .signWith(SignatureAlgorithm.HS512, JWT_SIGN_SECRET)
-                .compact();
+            .setSubject(userPrincipal.getUsername())
+            .setIssuedAt(Date.from(Instant.now()))
+            .setExpiration(Date.from(Instant.now().plus(jwtExpiration, SECONDS)))
+            .claim("currentUser", toJsonString(userPrincipal))
+            .signWith(SignatureAlgorithm.HS512, JWT_SIGN_SECRET)
+            .compact();
     }
 
     public String getUserNameFromJwtToken(String token) {
         return Jwts.parser()
-                .setSigningKey(JWT_SIGN_SECRET)
-                .parseClaimsJws(token)
-                .getBody().getSubject();
+            .setSigningKey(JWT_SIGN_SECRET)
+            .parseClaimsJws(token)
+            .getBody().getSubject();
     }
 
     public boolean validateJwtToken(String authToken) {
@@ -60,15 +63,15 @@ public class JwtProvider {
             Jwts.parser().setSigningKey(JWT_SIGN_SECRET).parseClaimsJws(authToken);
             return true;
         } catch (SignatureException e) {
-            LOGGER.error("Invalid JWT signature -> Message: {} ", e);
+            LOGGER.error("Invalid JWT signature -> Message: {} ", e.getMessage(), e);
         } catch (MalformedJwtException e) {
-            LOGGER.error("Invalid JWT token -> Message: {}", e);
+            LOGGER.error("Invalid JWT token -> Message: {}", e.getMessage(), e);
         } catch (ExpiredJwtException e) {
-            LOGGER.error("Expired JWT token -> Message: {}", e);
+            LOGGER.error("Expired JWT token -> Message: {}", e.getMessage(), e);
         } catch (UnsupportedJwtException e) {
-            LOGGER.error("Unsupported JWT token -> Message: {}", e);
+            LOGGER.error("Unsupported JWT token -> Message: {}", e.getMessage(), e);
         } catch (IllegalArgumentException e) {
-            LOGGER.error("JWT claims string is empty -> Message: {}", e);
+            LOGGER.error("JWT claims string is empty -> Message: {}", e.getMessage(), e);
         }
 
         return false;

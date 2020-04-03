@@ -1,0 +1,8 @@
+{
+  "properties": [
+    {
+      "name": "ru.lanit.bpm.jedu.hrjedi.jwtExpiration",
+      "type": "java.lang.Integer",
+      "description": "JWT expiration time in seconds"
+  }
+] }

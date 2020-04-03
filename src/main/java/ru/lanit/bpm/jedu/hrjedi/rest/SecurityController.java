@@ -29,7 +29,7 @@ import java.util.List;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
-@RequestMapping("/api/security")
+@RequestMapping("/hr-rest/security")
 public class SecurityController {
     private SecurityService securityService;
 
@@ -37,8 +37,6 @@ public class SecurityController {
     public SecurityController(SecurityService securityService) {
         this.securityService = securityService;
     }
-
-
 
     @PostMapping("/login")
     public ResponseEntity<JwtResponse> authenticateUser(@RequestBody LoginForm loginForm) {
@@ -49,7 +47,7 @@ public class SecurityController {
     @PostMapping("/signup")
     public ResponseEntity<String> registerUser(@RequestBody SignUpForm signUpRequest) {
         try {
-             securityService.registerUser(signUpRequest.getLogin(), signUpRequest.getPassword(), signUpRequest.getEmail(), signUpRequest.getRoles());
+            securityService.registerUser(signUpRequest.getLogin(), signUpRequest.getPassword(), signUpRequest.getEmail(), signUpRequest.getRoles());
         } catch (UserRegistrationException ex) {
             return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
         }
@@ -59,7 +57,7 @@ public class SecurityController {
 
     @GetMapping("/user")
     @PreAuthorize("hasRole('OMNI') or hasRole('ADMIN')")
-    public List<User> getAllUsers(){
+    public List<User> getAllUsers() {
         return securityService.getAllUsers();
     }
 }

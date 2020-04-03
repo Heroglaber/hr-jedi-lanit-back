@@ -19,22 +19,22 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/hr-rest/test")
 public class TestController {
 
-    @GetMapping("/test/user")
+    @GetMapping("/user")
     @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public String userAccess() {
         return ">>> User Contents!";
     }
 
-    @GetMapping("/test/omni")
+    @GetMapping("/omni")
     @PreAuthorize("hasRole('OMNI')")
     public String projectManagementAccess() {
         return ">>> Board Management Project";
     }
 
-    @GetMapping("/test/admin")
+    @GetMapping("/admin")
     @PreAuthorize("hasRole('ADMIN')")
     public String adminAccess() {
         return ">>> Admin Contents";

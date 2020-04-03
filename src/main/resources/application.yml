@@ -1,3 +1,4 @@
+# Spring
 server:
   port: 8888
 spring:
@@ -5,7 +6,17 @@ spring:
     username: sa
     password:
     url: jdbc:h2:./target/local_db;DB_CLOSE_DELAY=-1
-    show-sql: true
+  h2.console.enabled: true
+
+# Camunda
+camunda.bpm:
+  admin-user:
+    id: admin
+    password: admin
+    firstName: Administrator
+    lastName: Camunda
+  job-execution:
+    enabled: true
 
 # App Properties
 ru:
@@ -13,4 +24,10 @@ ru:
     bpm:
       jedu:
         hrjedi:
-          jwtExpiration: 3600000
+          jwtExpiration: 3600
+
+# logging
+logging:
+  level:
+    ru.lanit: debug
+#    org.springframework: debug

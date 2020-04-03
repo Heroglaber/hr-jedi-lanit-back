@@ -13,8 +13,7 @@
  */
 package ru.lanit.bpm.jedu.hrjedi.app;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.camunda.bpm.spring.boot.starter.annotation.EnableProcessApplication;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
@@ -25,12 +24,9 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 @ComponentScan(basePackages = "ru.lanit.bpm.jedu.hrjedi")
 @EnableJpaRepositories(basePackages = "ru.lanit.bpm.jedu.hrjedi.repository")
 @EntityScan(basePackages = "ru.lanit.bpm.jedu.hrjedi.model")
+@EnableProcessApplication("hrJedi")
 public class HrJediApplication {
-    private static final Logger LOGGER = LoggerFactory.getLogger(HrJediApplication.class);
-
     public static void main(String[] args) {
-
         SpringApplication.run(HrJediApplication.class, args);
     }
-
 }
