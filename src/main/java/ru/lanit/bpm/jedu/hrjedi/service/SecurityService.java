@@ -13,7 +13,7 @@
  */
 package ru.lanit.bpm.jedu.hrjedi.service;
 
-import ru.lanit.bpm.jedu.hrjedi.model.security.User;
+import ru.lanit.bpm.jedu.hrjedi.model.Employee;
 import ru.lanit.bpm.jedu.hrjedi.security.jwt.JwtResponse;
 
 import java.util.List;
@@ -21,11 +21,11 @@ import java.util.Set;
 
 public interface SecurityService {
 
-    void registerUser(String login, String password, String email, Set<String> rolesStrings);
+    void registerEmployee(String login, String password, String email, Set<String> rolesStrings);
 
-    JwtResponse authenticateUser(String login, String password);
+    JwtResponse authenticateEmployee(String login, String password);
 
-    List<User> getAllUsers();
+    List<Employee> getAllUsers();
 
     long getNumberOfAdmins();
 }

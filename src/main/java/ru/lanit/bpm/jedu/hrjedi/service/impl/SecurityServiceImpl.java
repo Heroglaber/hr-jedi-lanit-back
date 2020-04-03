@@ -23,13 +23,14 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.lanit.bpm.jedu.hrjedi.model.security.Role;
 import ru.lanit.bpm.jedu.hrjedi.model.security.RoleName;
-import ru.lanit.bpm.jedu.hrjedi.model.security.User;
+import ru.lanit.bpm.jedu.hrjedi.model.Employee;
+import ru.lanit.bpm.jedu.hrjedi.model.security.State;
 import ru.lanit.bpm.jedu.hrjedi.repository.RoleRepository;
-import ru.lanit.bpm.jedu.hrjedi.repository.UserRepository;
+import ru.lanit.bpm.jedu.hrjedi.repository.EmployeeRepository;
 import ru.lanit.bpm.jedu.hrjedi.security.jwt.JwtProvider;
 import ru.lanit.bpm.jedu.hrjedi.security.jwt.JwtResponse;
 import ru.lanit.bpm.jedu.hrjedi.service.SecurityService;
-import ru.lanit.bpm.jedu.hrjedi.service.exception.UserRegistrationException;
+import ru.lanit.bpm.jedu.hrjedi.service.exception.EmployeeRegistrationException;
 
 import java.util.HashSet;
 import java.util.List;
@@ -52,29 +53,30 @@ public class SecurityServiceImpl implements SecurityService {
     @Autowired
     JwtProvider jwtProvider;
 
-    private UserRepository userRepository;
+    private EmployeeRepository employeeRepository;
 
     @Autowired
-    public void setUserRepository(UserRepository userRepository) {
-        this.userRepository = userRepository;
+    public void setEmployeeRepository(EmployeeRepository employeeRepository) {
+        this.employeeRepository = employeeRepository;
     }
 
     @Transactional
     @Override
-    public void registerUser(String login, String password, String email, Set<String> rolesStrings) {
+    public void registerEmployee(String login, String password, String email, Set<String> rolesStrings) {
         String trimmedLoginInLowerCase = login.trim().toLowerCase();
 
         validateRegisteredLogin(trimmedLoginInLowerCase);
         validateRegisteredEmail(email);
 
-        User user = new User(trimmedLoginInLowerCase, passwordEncoder.encode(password), email);
+        Employee user = new Employee(trimmedLoginInLowerCase, passwordEncoder.encode(password), email);
         user.setRoles(validateAndGetRegisteredRoles(rolesStrings));
-        userRepository.save(user);
+        user.setState(State.ACTIVE); // FIXME: Уточнить значение по-умолчанию
+        employeeRepository.save(user);
     }
 
     @Transactional
     @Override
-    public JwtResponse authenticateUser(String login, String password) {
+    public JwtResponse authenticateEmployee(String login, String password) {
         String trimmedLoginInLowerCase = login.trim().toLowerCase();
         Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(trimmedLoginInLowerCase, password));
         SecurityContextHolder.getContext().setAuthentication(authentication);
@@ -85,13 +87,13 @@ public class SecurityServiceImpl implements SecurityService {
     }
 
     @Override
-    public List<User> getAllUsers() {
-        return userRepository.findAll();
+    public List<Employee> getAllUsers() {
+        return employeeRepository.findAll();
     }
 
     @Override
     public long getNumberOfAdmins() {
-        return userRepository.findAll()
+        return employeeRepository.findAll()
                 .stream()
                 .filter(user ->
                         user.getRoles()
@@ -106,14 +108,14 @@ public class SecurityServiceImpl implements SecurityService {
     // ===================================================================================================================
 
     private void validateRegisteredLogin(String login) {
-        if (userRepository.existsByLogin(login)) {
-            throw new UserRegistrationException("User with this login already exists!");
+        if (employeeRepository.existsByLogin(login)) {
+            throw new EmployeeRegistrationException("Employee with this login already exists!");
         }
     }
 
     private void validateRegisteredEmail(String email) {
-        if (userRepository.existsByEmail(email)) {
-            throw new UserRegistrationException("User with this login already exists!");
+        if (employeeRepository.existsByEmail(email)) {
+            throw new EmployeeRegistrationException("Employee with this login already exists!");
         }
     }
 
@@ -124,19 +126,25 @@ public class SecurityServiceImpl implements SecurityService {
             switch (role) {
                 case "admin":
                     Role adminRole = roleRepository.findByName(RoleName.ROLE_ADMIN)
-                            .orElseThrow(() -> new UserRegistrationException("Invalid role was given to registration"));
+                            .orElseThrow(() -> new EmployeeRegistrationException("Invalid role was given to registration"));
                     roles.add(adminRole);
 
                     break;
                 case "omni":
                     Role omniRole = roleRepository.findByName(RoleName.ROLE_OMNI)
-                            .orElseThrow(() -> new UserRegistrationException("Invalid role was given to registration"));
+                            .orElseThrow(() -> new EmployeeRegistrationException("Invalid role was given to registration"));
                     roles.add(omniRole);
+
+                    break;
+                case "hr":
+                    Role hrRole = roleRepository.findByName(RoleName.ROLE_HR)
+                            .orElseThrow(() -> new EmployeeRegistrationException("Invalid role was given to registration"));
+                    roles.add(hrRole);
 
                     break;
                 default:
                     Role userRole = roleRepository.findByName(RoleName.ROLE_USER)
-                            .orElseThrow(() -> new UserRegistrationException("Invalid role was given to registration"));
+                            .orElseThrow(() -> new EmployeeRegistrationException("Invalid role was given to registration"));
                     roles.add(userRole);
             }
         });

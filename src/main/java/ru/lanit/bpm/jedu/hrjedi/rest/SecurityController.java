@@ -18,12 +18,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-import ru.lanit.bpm.jedu.hrjedi.model.security.User;
+import ru.lanit.bpm.jedu.hrjedi.model.Employee;
 import ru.lanit.bpm.jedu.hrjedi.rest.form.LoginForm;
 import ru.lanit.bpm.jedu.hrjedi.rest.form.SignUpForm;
 import ru.lanit.bpm.jedu.hrjedi.security.jwt.JwtResponse;
 import ru.lanit.bpm.jedu.hrjedi.service.SecurityService;
-import ru.lanit.bpm.jedu.hrjedi.service.exception.UserRegistrationException;
+import ru.lanit.bpm.jedu.hrjedi.service.exception.EmployeeRegistrationException;
 
 import java.util.List;
 
@@ -39,25 +39,25 @@ public class SecurityController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<JwtResponse> authenticateUser(@RequestBody LoginForm loginForm) {
-        JwtResponse jwtResponse = securityService.authenticateUser(loginForm.getLogin(), loginForm.getPassword());
+    public ResponseEntity<JwtResponse> authenticateEmployee(@RequestBody LoginForm loginForm) {
+        JwtResponse jwtResponse = securityService.authenticateEmployee(loginForm.getLogin(), loginForm.getPassword());
         return ResponseEntity.ok(jwtResponse);
     }
 
     @PostMapping("/signup")
-    public ResponseEntity<String> registerUser(@RequestBody SignUpForm signUpRequest) {
+    public ResponseEntity<String> registerEmployee(@RequestBody SignUpForm signUpRequest) {
         try {
-            securityService.registerUser(signUpRequest.getLogin(), signUpRequest.getPassword(), signUpRequest.getEmail(), signUpRequest.getRoles());
-        } catch (UserRegistrationException ex) {
+             securityService.registerEmployee(signUpRequest.getLogin(), signUpRequest.getPassword(), signUpRequest.getEmail(), signUpRequest.getRoles());
+        } catch (EmployeeRegistrationException ex) {
             return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
         }
 
-        return ResponseEntity.ok().body("User registered successfully!");
+        return ResponseEntity.ok().body("Employee registered successfully!");
     }
 
     @GetMapping("/user")
     @PreAuthorize("hasRole('OMNI') or hasRole('ADMIN')")
-    public List<User> getAllUsers() {
+    public List<Employee> getAllUsers(){
         return securityService.getAllUsers();
     }
 }

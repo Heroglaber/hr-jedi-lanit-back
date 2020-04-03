@@ -16,5 +16,6 @@ package ru.lanit.bpm.jedu.hrjedi.model.security;
 public enum RoleName {
     ROLE_USER,
     ROLE_ADMIN,
-    ROLE_OMNI
+    ROLE_OMNI,
+    ROLE_HR
 }
