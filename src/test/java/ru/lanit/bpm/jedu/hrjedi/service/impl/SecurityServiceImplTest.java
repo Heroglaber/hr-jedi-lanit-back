@@ -11,7 +11,7 @@
  *
  * $
  */
-package ru.lanit.bpm.jedu.hrjedi.impl;
+package ru.lanit.bpm.jedu.hrjedi.service.impl;
 
 import org.easymock.EasyMock;
 import org.easymock.TestSubject;
@@ -21,11 +21,10 @@ import org.junit.runner.RunWith;
 import org.unitils.UnitilsBlockJUnit4ClassRunner;
 import org.unitils.easymock.EasyMockUnitils;
 import org.unitils.easymock.annotation.Mock;
+import ru.lanit.bpm.jedu.hrjedi.model.Employee;
 import ru.lanit.bpm.jedu.hrjedi.model.security.Role;
 import ru.lanit.bpm.jedu.hrjedi.model.security.RoleName;
-import ru.lanit.bpm.jedu.hrjedi.model.Employee;
 import ru.lanit.bpm.jedu.hrjedi.repository.EmployeeRepository;
-import ru.lanit.bpm.jedu.hrjedi.service.impl.SecurityServiceImpl;
 
 import java.util.Collection;
 import java.util.HashSet;
@@ -66,7 +65,9 @@ public class SecurityServiceImplTest {
         assertEquals(2, numberOfAdmins);
     }
 
-
+    // ===================================================================================================================
+    // = Implementation
+    // ===================================================================================================================
 
     private Employee user(Collection<Role> roles){
         Employee user = new Employee();

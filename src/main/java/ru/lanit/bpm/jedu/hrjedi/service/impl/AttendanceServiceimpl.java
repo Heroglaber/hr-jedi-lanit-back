@@ -27,8 +27,13 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
+import static java.time.Month.JANUARY;
+import static java.util.Collections.emptyList;
+
 @Service
 public class AttendanceServiceimpl implements AttendanceService {
+    private static final int NUMBER_OF_MONTH_IN_YEAR = 12;
+
     private AttendanceRepository attendanceRepository;
     private DateTimeService dateTimeService;
 
@@ -51,9 +56,17 @@ public class AttendanceServiceimpl implements AttendanceService {
     @Transactional(readOnly=true)
     @Override
     public List<YearMonth> getMonthsWithoutAttendanceInfoByYear(int year) {
+        YearMonth currentMonth = dateTimeService.getCurrentMonth();
+        int currentYear = currentMonth.getYear();
+
+        if(year > currentYear || YearMonth.of(year, JANUARY).equals(currentMonth)){
+            return emptyList();
+        }
+
+        int numberOfMonthForWhichAttendanceInfoRequired = year == currentYear ? currentMonth.getMonthValue() - 1  : NUMBER_OF_MONTH_IN_YEAR;
         Set<Integer> monthsValuesWithAttendanceInfo = attendanceRepository.findMonthsValuesWithAttendanceInfoByYear(year);
 
-        return IntStream.range(1, dateTimeService.getCurrentMonth().getMonthValue())
+        return IntStream.rangeClosed(1, numberOfMonthForWhichAttendanceInfoRequired)
                 .filter(requiredMonth -> !monthsValuesWithAttendanceInfo.contains(requiredMonth))
                 .mapToObj(requiredMonthWithoutInfo -> YearMonth.of(year, requiredMonthWithoutInfo))
                 .collect(Collectors.toList());
