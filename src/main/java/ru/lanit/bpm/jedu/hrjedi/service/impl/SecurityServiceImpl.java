@@ -86,11 +86,13 @@ public class SecurityServiceImpl implements SecurityService {
         return new JwtResponse(jwtToken);
     }
 
+    @Transactional(readOnly = true)
     @Override
     public List<Employee> getAllUsers() {
         return employeeRepository.findAll();
     }
 
+    @Transactional(readOnly = true)
     @Override
     public long getNumberOfAdmins() {
         return employeeRepository.findAll()

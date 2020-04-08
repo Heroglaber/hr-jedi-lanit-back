@@ -21,6 +21,25 @@ CREATE TABLE EMPLOYEE_ROLE
     role_id NUMBER NOT NULL
 );
 
+CREATE TABLE OFFICE
+(
+    id NUMBER PRIMARY KEY,
+    name VARCHAR2(40) NOT NULL
+);
+
+CREATE SEQUENCE sq_office_id START WITH 1 INCREMENT BY 1;
+
+CREATE TABLE ATTENDANCE
+(
+    id NUMBER PRIMARY KEY,
+    employee_id NUMBER NOT NULL,
+    office_id NUMBER NOT NULL,
+    entrance_time TIMESTAMP NOT NULL,
+    exit_time TIMESTAMP NOT NULL
+);
+
+CREATE SEQUENCE sq_attendance_id START WITH 1 INCREMENT BY 1;
+
 INSERT INTO ROLE VALUES (next value for sq_role_id, 'ROLE_ADMIN');
 INSERT INTO ROLE VALUES (next value for sq_role_id, 'ROLE_OMNI');
 INSERT INTO ROLE VALUES (next value for sq_role_id, 'ROLE_USER');
@@ -31,11 +50,27 @@ INSERT INTO ROLE VALUES (next value for sq_role_id, 'ROLE_HR');
 -- omni:omni
 -- user:user
 -- hr:hrhr
+-- ivanov:ivanov
+-- petrov:petrov
+-- sergeev:sergeev
 INSERT INTO EMPLOYEE (id, login, hash_password, email, state)
 VALUES (next value for sq_employee_id, 'admin', '$2a$04$l6jf/IelD8EcKEx0z5LJFur01DtdBcTLUxfiq79X1GF2hgJdmIeEW', 'admin@hrjedu.com', 'ACTIVE'),
        (next value for sq_employee_id, 'omni', '$2a$04$y1oDipZIlwPEGBPtTrXT4.9enhB4zuQoQKstVueSSmK9qqdY.yU6y', 'omni@hrjedu.com', 'ACTIVE'),
        (next value for sq_employee_id, 'user', '$2a$04$uUTMuVyvusd6gIkxLdrF5ufDQ0K359C0Pjq6yBtbctOo3y6mhpwiy', 'user@hrjedu.com', 'ACTIVE'),
-       (next value for sq_employee_id, 'hr', '$2a$10$XSQvfCA/R0pKCL01GUA9T.tQCUKRFfRt3uyOLEEYgCJQOaTN/F8Aa', 'hr@hrjedu.com', 'ACTIVE');
+       (next value for sq_employee_id, 'hr', '$2a$10$XSQvfCA/R0pKCL01GUA9T.tQCUKRFfRt3uyOLEEYgCJQOaTN/F8Aa', 'hr@hrjedu.com', 'ACTIVE'),
+       (next value for sq_employee_id, 'ivanov', '$2a$10$68olLYWwEaKT5tET0pyqEO2wALSDaQauWvXpYtyCWGRrxugiA3ibK', 'ivanov@hrjedu.com', 'ACTIVE'),
+       (next value for sq_employee_id, 'petrov', '$2a$10$apcWOiLHASd.0ZdPwVzKMOEnw8uLKJeb5dKMweD1X/S9QuwHTv9VW', 'petrov@hrjedu.com', 'ACTIVE'),
+       (next value for sq_employee_id, 'sergeev', '$2a$10$B5oxDvzLGBAIbHnYFiSA5ux/6OtiPZWoDTkBpsxRl49lQlFYJhmjm', 'sergeev@hrjedu.com', 'ACTIVE');
 
 INSERT INTO EMPLOYEE_ROLE
-VALUES (1, 1), (2, 2), (3, 3), (4, 4);
+VALUES (1, 1), (2, 2), (3, 3), (4, 4), (5, 3), (6, 3), (7, 3);
+
+INSERT INTO OFFICE
+VALUES (next value for sq_office_id, 'Москва'),
+       (next value for sq_office_id, 'Нижний Новгород'),
+       (next value for sq_office_id, 'Уфа');
+
+INSERT INTO ATTENDANCE
+VALUES (next value for sq_attendance_id, 3, 1, PARSEDATETIME('10-01-2020 09:04:24','dd-MM-yyyy hh:mm:ss'), PARSEDATETIME('10-01-2020 18:20:01','dd-MM-yyyy hh:mm:ss')),
+       (next value for sq_attendance_id, 3, 1, PARSEDATETIME('13-01-2020 09:20:25','dd-MM-yyyy hh:mm:ss'), PARSEDATETIME('13-01-2020 18:00:52','dd-MM-yyyy hh:mm:ss')),
+       (next value for sq_attendance_id, 3, 2, PARSEDATETIME('14-01-2020 08:59:12','dd-MM-yyyy hh:mm:ss'), PARSEDATETIME('14-01-2020 18:05:45','dd-MM-yyyy hh:mm:ss'));

@@ -21,6 +21,7 @@
         <commons-lang3.version>3.9</commons-lang3.version>
         <camunda-bpm-spring-boot.version>3.4.1</camunda-bpm-spring-boot.version>
         <spring-boot.version>2.2.6.RELEASE</spring-boot.version>
+        <saxon-he.version>9.9.1-7</saxon-he.version>
     </properties>
 
     <dependencyManagement>
@@ -121,6 +122,11 @@
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
             <version>${commons-lang3.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>net.sf.saxon</groupId>
+            <artifactId>Saxon-HE</artifactId>
+            <version>${saxon-he.version}</version>
         </dependency>
 
     </dependencies>
