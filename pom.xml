@@ -7,10 +7,16 @@
     <artifactId>hr-jedi</artifactId>
     <version>CURRENT</version>
     <packaging>jar</packaging>
+    <name>HR Jedi</name>
 
     <properties>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
+
+        <sonar.login/>
+        <sonar.host.url>http://jedu-sonar.bpm.lanit/</sonar.host.url>
+        <sonar.projectKey>${project.groupId}:${project.artifactId}:${sonar.login}</sonar.projectKey>
+        <sonar.scm.provider>git</sonar.scm.provider>
 
         <commons-lang.version>2.6</commons-lang.version>
         <jjwt.version>0.9.0</jjwt.version>
@@ -23,6 +29,11 @@
         <camunda-bpm-spring-boot.version>3.4.1</camunda-bpm-spring-boot.version>
         <spring-boot.version>2.2.6.RELEASE</spring-boot.version>
         <saxon-he.version>9.9.1-7</saxon-he.version>
+        <maven-surefire-plugin.version>2.20.1</maven-surefire-plugin.version>
+        <maven-failsafe-plugin.version>${maven-surefire-plugin.version}</maven-failsafe-plugin.version>
+        <groovy-maven-plugin.version>2.1</groovy-maven-plugin.version>
+        <jacoco-maven-plugin.version>0.8.4</jacoco-maven-plugin.version>
+        <sonar-maven-plugin.version>3.6.0.1398</sonar-maven-plugin.version>
     </properties>
 
     <dependencyManagement>
@@ -36,7 +47,6 @@
             </dependency>
         </dependencies>
     </dependencyManagement>
-
 
     <dependencies>
         <dependency>
@@ -95,7 +105,6 @@
             <scope>provided</scope>
         </dependency>
 
-
         <dependency>
             <groupId>org.camunda.bpm.springboot</groupId>
             <artifactId>camunda-bpm-spring-boot-starter-test</artifactId>
@@ -137,8 +146,101 @@
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
+                <version>${spring-boot.version}</version>
             </plugin>
         </plugins>
     </build>
 
+    <profiles>
+        <profile>
+            <id>code-coverage</id>
+            <properties>
+            </properties>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.codehaus.gmaven</groupId>
+                        <artifactId>groovy-maven-plugin</artifactId>
+                        <version>${groovy-maven-plugin.version}</version>
+                        <executions>
+                            <execution>
+                                <id>locate-coverage-path</id>
+                                <goals>
+                                    <goal>execute</goal>
+                                </goals>
+                                <phase>initialize</phase>
+                                <configuration>
+                                    <!--suppress GroovyAssignabilityCheck -->
+                                    <!-- $session is not resolved by sonar plugin if set via properties element -->
+                                    <source>
+                                        path = session.projectDependencyGraph.sortedProjects[0].build.directory + "/jacoco.exec"
+                                        project.properties["sonar.jacoco.reportPaths"] = path
+                                    </source>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+
+                    <plugin>
+                        <artifactId>maven-surefire-plugin</artifactId>
+                        <version>${maven-surefire-plugin.version}</version>
+                        <configuration>
+                            <!--suppress MavenModelInspection -->
+                            <argLine>${jacoco.agent}</argLine>
+                        </configuration>
+                    </plugin>
+
+                    <plugin>
+                        <artifactId>maven-failsafe-plugin</artifactId>
+                        <version>${maven-failsafe-plugin.version}</version>
+                        <executions>
+                            <execution>
+                                <id>integration-test</id>
+                                <configuration>
+                                    <!--suppress MavenModelInspection -->
+                                    <argLine>${jacoco.agent}</argLine>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+
+                    <plugin>
+                        <groupId>org.jacoco</groupId>
+                        <artifactId>jacoco-maven-plugin</artifactId>
+                        <version>${jacoco-maven-plugin.version}</version>
+                        <executions>
+                            <execution>
+                                <id>jacoco-coverage</id>
+                                <goals>
+                                    <goal>prepare-agent</goal>
+                                    <goal>report</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                        <configuration>
+                            <propertyName>jacoco.agent</propertyName>
+                            <append>true</append>
+                            <destFile>${sonar.jacoco.reportPaths}</destFile>
+                            <dataFile>${sonar.jacoco.reportPaths}</dataFile>
+                        </configuration>
+                    </plugin>
+
+                    <plugin>
+                        <groupId>org.sonarsource.scanner.maven</groupId>
+                        <artifactId>sonar-maven-plugin</artifactId>
+                        <version>${sonar-maven-plugin.version}</version>
+                        <executions>
+                            <execution>
+                                <id>deploy-to-sonar</id>
+                                <phase>verify</phase>
+                                <goals>
+                                    <goal>sonar</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 </project>
