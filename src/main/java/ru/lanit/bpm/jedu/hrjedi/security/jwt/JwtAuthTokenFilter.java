@@ -13,10 +13,13 @@
  */
 package ru.lanit.bpm.jedu.hrjedi.security.jwt;
 
+import org.camunda.bpm.engine.IdentityService;
+import org.camunda.bpm.engine.impl.identity.Authentication;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
@@ -28,6 +31,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.stream.Collectors;
 
 public class JwtAuthTokenFilter extends OncePerRequestFilter {
     private static final Logger LOGGER = LoggerFactory.getLogger(JwtAuthTokenFilter.class);
@@ -38,13 +42,15 @@ public class JwtAuthTokenFilter extends OncePerRequestFilter {
     @Autowired
     private UserDetailsServiceImpl userDetailsService;
 
+    @Autowired
+    private IdentityService camundaIdentityService;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
-                        throws ServletException, IOException {
+        throws ServletException, IOException {
         try {
             String jwt = getJwt(request);
-            if (jwt!=null && tokenProvider.validateJwtToken(jwt)) {
+            if (jwt != null && tokenProvider.validateJwtToken(jwt)) {
                 String username = tokenProvider.getUserNameFromJwtToken(jwt);
 
                 UserDetails userDetails = userDetailsService.loadUserByUsername(username);
@@ -53,6 +59,11 @@ public class JwtAuthTokenFilter extends OncePerRequestFilter {
                 authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
 
                 SecurityContextHolder.getContext().setAuthentication(authentication);
+                Authentication camundaAuthentication = new Authentication(
+                    userDetails.getUsername(),
+                    userDetails.getAuthorities().stream().map(GrantedAuthority::getAuthority).collect(Collectors.toList())
+                );
+                camundaIdentityService.setAuthentication(camundaAuthentication);
             }
         } catch (Exception e) {
             LOGGER.error("Can NOT set user authentication -> Message: {}", e);
@@ -65,7 +76,7 @@ public class JwtAuthTokenFilter extends OncePerRequestFilter {
         String authHeader = request.getHeader("Authorization");
 
         if (authHeader != null && authHeader.startsWith("Bearer ")) {
-          return authHeader.replace("Bearer ","");
+            return authHeader.replace("Bearer ", "");
         }
 
         return null;

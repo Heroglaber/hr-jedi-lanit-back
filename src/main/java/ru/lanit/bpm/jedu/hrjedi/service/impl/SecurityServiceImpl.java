@@ -21,12 +21,12 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ru.lanit.bpm.jedu.hrjedi.model.Employee;
 import ru.lanit.bpm.jedu.hrjedi.model.security.Role;
 import ru.lanit.bpm.jedu.hrjedi.model.security.RoleName;
-import ru.lanit.bpm.jedu.hrjedi.model.Employee;
 import ru.lanit.bpm.jedu.hrjedi.model.security.State;
-import ru.lanit.bpm.jedu.hrjedi.repository.RoleRepository;
 import ru.lanit.bpm.jedu.hrjedi.repository.EmployeeRepository;
+import ru.lanit.bpm.jedu.hrjedi.repository.RoleRepository;
 import ru.lanit.bpm.jedu.hrjedi.security.jwt.JwtProvider;
 import ru.lanit.bpm.jedu.hrjedi.security.jwt.JwtResponse;
 import ru.lanit.bpm.jedu.hrjedi.service.SecurityService;
@@ -62,13 +62,13 @@ public class SecurityServiceImpl implements SecurityService {
 
     @Transactional
     @Override
-    public void registerEmployee(String login, String password, String email, Set<String> rolesStrings) {
+    public void registerEmployee(String login, String firstName, String secondName, String lastName, String password, String email, Set<String> rolesStrings) {
         String trimmedLoginInLowerCase = login.trim().toLowerCase();
 
         validateRegisteredLogin(trimmedLoginInLowerCase);
         validateRegisteredEmail(email);
 
-        Employee user = new Employee(trimmedLoginInLowerCase, passwordEncoder.encode(password), email);
+        Employee user = new Employee(trimmedLoginInLowerCase, firstName, secondName, lastName, passwordEncoder.encode(password), email);
         user.setRoles(validateAndGetRegisteredRoles(rolesStrings));
         user.setState(State.ACTIVE); // FIXME: Уточнить значение по-умолчанию
         employeeRepository.save(user);
@@ -96,13 +96,13 @@ public class SecurityServiceImpl implements SecurityService {
     @Override
     public long getNumberOfAdmins() {
         return employeeRepository.findAll()
-                .stream()
-                .filter(user ->
-                        user.getRoles()
-                                .stream()
-                                .anyMatch(role -> ROLE_ADMIN.equals(role.getName()))
-                )
-                .count();
+            .stream()
+            .filter(user ->
+                user.getRoles()
+                    .stream()
+                    .anyMatch(role -> ROLE_ADMIN.equals(role.getName()))
+            )
+            .count();
     }
 
     // ===================================================================================================================
@@ -128,25 +128,25 @@ public class SecurityServiceImpl implements SecurityService {
             switch (role) {
                 case "admin":
                     Role adminRole = roleRepository.findByName(RoleName.ROLE_ADMIN)
-                            .orElseThrow(() -> new EmployeeRegistrationException("Invalid role was given to registration"));
+                        .orElseThrow(() -> new EmployeeRegistrationException("Invalid role was given to registration"));
                     roles.add(adminRole);
 
                     break;
                 case "omni":
                     Role omniRole = roleRepository.findByName(RoleName.ROLE_OMNI)
-                            .orElseThrow(() -> new EmployeeRegistrationException("Invalid role was given to registration"));
+                        .orElseThrow(() -> new EmployeeRegistrationException("Invalid role was given to registration"));
                     roles.add(omniRole);
 
                     break;
                 case "hr":
                     Role hrRole = roleRepository.findByName(RoleName.ROLE_HR)
-                            .orElseThrow(() -> new EmployeeRegistrationException("Invalid role was given to registration"));
+                        .orElseThrow(() -> new EmployeeRegistrationException("Invalid role was given to registration"));
                     roles.add(hrRole);
 
                     break;
                 default:
                     Role userRole = roleRepository.findByName(RoleName.ROLE_USER)
-                            .orElseThrow(() -> new EmployeeRegistrationException("Invalid role was given to registration"));
+                        .orElseThrow(() -> new EmployeeRegistrationException("Invalid role was given to registration"));
                     roles.add(userRole);
             }
         });

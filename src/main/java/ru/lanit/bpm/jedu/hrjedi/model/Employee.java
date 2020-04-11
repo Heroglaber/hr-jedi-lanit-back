@@ -23,10 +23,9 @@ import java.util.Set;
 
 @Entity
 @Table(name = "EMPLOYEE", uniqueConstraints = {
-        @UniqueConstraint(columnNames = {
-                "LOGIN"
-        })
-
+    @UniqueConstraint(columnNames = {
+        "LOGIN"
+    })
 })
 public class Employee {
     @Id
@@ -37,14 +36,20 @@ public class Employee {
     @NaturalId
     private String login;
 
+    private String firstName;
+    private String secondName;
+    private String lastName;
+
     private String hashPassword;
 
     private String email;
 
     @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(name = "EMPLOYEE_ROLE",
-    joinColumns = @JoinColumn(name = "EMPLOYEE_ID"),
-    inverseJoinColumns = @JoinColumn(name = "ROLE_ID"))
+    @JoinTable(
+        name = "EMPLOYEE_ROLE",
+        joinColumns = @JoinColumn(name = "EMPLOYEE_ID"),
+        inverseJoinColumns = @JoinColumn(name = "ROLE_ID")
+    )
     private Set<Role> roles = new HashSet<>();
 
     @Enumerated(value = EnumType.STRING)
@@ -53,8 +58,11 @@ public class Employee {
     public Employee() {
     }
 
-    public Employee(String login, String hashPassword, String email){
-        this.login=login;
+    public Employee(String login, String firstName, String secondName, String lastName, String hashPassword, String email) {
+        this.login = login;
+        this.firstName = firstName;
+        this.secondName = secondName;
+        this.lastName = lastName;
         this.hashPassword = hashPassword;
         this.email = email;
     }
@@ -105,5 +113,33 @@ public class Employee {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public String getSecondName() {
+        return secondName;
+    }
+
+    public void setSecondName(String secondName) {
+        this.secondName = secondName;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
+    public String getFullName() {
+        return secondName == null ? String.format("%s %s", firstName, lastName) : String.format("%s %s %s", firstName, secondName, lastName);
     }
 }
