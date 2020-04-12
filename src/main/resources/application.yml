@@ -3,7 +3,7 @@ server:
   port: 8888
 spring:
   datasource:
-    url: jdbc:h2:./target/local_db;AUTO_SERVER=TRUE
+    url: jdbc:h2:./target/local_db;DB_CLOSE_DELAY=-1;AUTO_SERVER=TRUE
     username: sa
     password:
   h2.console.enabled: true
