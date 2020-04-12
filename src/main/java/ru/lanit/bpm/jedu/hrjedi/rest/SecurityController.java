@@ -13,7 +13,6 @@
  */
 package ru.lanit.bpm.jedu.hrjedi.rest;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -33,7 +32,6 @@ import java.util.List;
 public class SecurityController {
     private SecurityService securityService;
 
-    @Autowired
     public SecurityController(SecurityService securityService) {
         this.securityService = securityService;
     }
@@ -47,7 +45,7 @@ public class SecurityController {
     @PostMapping("/signup")
     public ResponseEntity<String> registerEmployee(@RequestBody SignUpForm signUpRequest) {
         try {
-             securityService.registerEmployee(signUpRequest.getLogin(), signUpRequest.getPassword(), signUpRequest.getEmail(), signUpRequest.getRoles());
+            securityService.registerEmployee(signUpRequest.getLogin(), signUpRequest.getPassword(), signUpRequest.getEmail(), signUpRequest.getRoles());
         } catch (EmployeeRegistrationException ex) {
             return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
         }
@@ -57,7 +55,7 @@ public class SecurityController {
 
     @GetMapping("/user")
     @PreAuthorize("hasRole('OMNI') or hasRole('ADMIN')")
-    public List<Employee> getAllUsers(){
+    public List<Employee> getAllUsers() {
         return securityService.getAllUsers();
     }
 }
