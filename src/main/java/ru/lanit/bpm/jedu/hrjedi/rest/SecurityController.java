@@ -47,7 +47,7 @@ public class SecurityController {
         try {
             securityService.registerEmployee(
                 signUpRequest.getLogin(),
-                signUpRequest.getFistName(),
+                signUpRequest.getFirstName(),
                 signUpRequest.getSecondName(),
                 signUpRequest.getLastName(),
                 signUpRequest.getPassword(),

@@ -96,13 +96,13 @@ public class SecurityServiceImpl implements SecurityService {
     @Override
     public long getNumberOfAdmins() {
         return employeeRepository.findAll()
-            .stream()
-            .filter(user ->
-                user.getRoles()
-                    .stream()
-                    .anyMatch(role -> ROLE_ADMIN.equals(role.getName()))
-            )
-            .count();
+                .stream()
+                .filter(user ->
+                        user.getRoles()
+                                .stream()
+                                .anyMatch(role -> ROLE_ADMIN.equals(role.getName()))
+                )
+                .count();
     }
 
     // ===================================================================================================================
@@ -122,35 +122,31 @@ public class SecurityServiceImpl implements SecurityService {
     }
 
     private Set<Role> validateAndGetRegisteredRoles(Set<String> rolesStrings) {
-        Set<Role> roles = new HashSet<>();
+        Set<Role> registeredRoles = new HashSet<>();
 
-        rolesStrings.forEach(role -> {
-            switch (role) {
-                case "admin":
-                    Role adminRole = roleRepository.findByName(RoleName.ROLE_ADMIN)
-                        .orElseThrow(() -> new EmployeeRegistrationException("Invalid role was given to registration"));
-                    roles.add(adminRole);
+        rolesStrings.forEach(roleString -> {
+                    RoleName registeredRoleName = extractRoleNameFromRoleString(roleString);
+                    Role registeredRole = roleRepository.findByName(registeredRoleName)
+                            .orElseThrow(() -> new EmployeeRegistrationException("Could not find provided role by role name in the database"));
+                    registeredRoles.add(registeredRole);
+                }
+        );
 
-                    break;
-                case "omni":
-                    Role omniRole = roleRepository.findByName(RoleName.ROLE_OMNI)
-                        .orElseThrow(() -> new EmployeeRegistrationException("Invalid role was given to registration"));
-                    roles.add(omniRole);
+        return registeredRoles;
+    }
 
-                    break;
-                case "hr":
-                    Role hrRole = roleRepository.findByName(RoleName.ROLE_HR)
-                        .orElseThrow(() -> new EmployeeRegistrationException("Invalid role was given to registration"));
-                    roles.add(hrRole);
-
-                    break;
-                default:
-                    Role userRole = roleRepository.findByName(RoleName.ROLE_USER)
-                        .orElseThrow(() -> new EmployeeRegistrationException("Invalid role was given to registration"));
-                    roles.add(userRole);
-            }
-        });
-
-        return roles;
+    private RoleName extractRoleNameFromRoleString(String roleString) {
+        switch (roleString.trim().toLowerCase()) {
+            case "admin":
+                return RoleName.ROLE_ADMIN;
+            case "omni":
+                return RoleName.ROLE_OMNI;
+            case "hr":
+                return  RoleName.ROLE_HR;
+            case "user":
+                return  RoleName.ROLE_USER;
+            default:
+                throw new EmployeeRegistrationException("Invalid role was given for registration");
+        }
     }
 }

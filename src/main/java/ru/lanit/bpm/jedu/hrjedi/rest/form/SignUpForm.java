@@ -18,7 +18,7 @@ import java.util.Set;
 public class SignUpForm {
     private String login;
     private String email;
-    private String fistName;
+    private String firstName;
     private String secondName;
     private String lastName;
     private Set<String> roles;
@@ -56,12 +56,12 @@ public class SignUpForm {
         this.roles = roles;
     }
 
-    public String getFistName() {
-        return fistName;
+    public String getFirstName() {
+        return firstName;
     }
 
-    public void setFistName(String fistName) {
-        this.fistName = fistName;
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
     }
 
     public String getSecondName() {
