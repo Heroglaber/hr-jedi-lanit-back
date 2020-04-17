@@ -3,6 +3,32 @@
     {
       "name": "ru.lanit.bpm.jedu.hrjedi.jwtExpiration",
       "type": "java.lang.Integer",
-      "description": "JWT expiration time in seconds"
-  }
-] }
+      "description": "JWT expiration time in seconds."
+    },
+    {
+      "name": "ru.lanit.bpm.jedu.hrjedi.email.mode",
+      "type": "java.lang.String",
+      "description": "Mode in which application sends emails: off - messaging is turned off, dev - messages are sent to application email address, prod - messages are sent to actual recipients."
+    },
+    {
+      "name": "ru.lanit.bpm.jedu.hrjedi.email.mailAddress",
+      "type": "java.lang.String",
+      "description": "Application email address, from which it sends messages."
+    },
+    {
+      "name": "ru.lanit.bpm.jedu.hrjedi.email.mailPassowrd",
+      "type": "java.lang.String",
+      "description": "Password for application email account."
+    },
+    {
+      "name": "ru.lanit.bpm.jedu.hrjedi.email.smtp.host",
+      "type": "java.lang.String",
+      "description": "Host of smtp mail server that maintains application email account."
+    },
+    {
+      "name": "ru.lanit.bpm.jedu.hrjedi.email.smtp.port",
+      "type": "java.lang.String",
+      "description": "Port of smtp mail server that maintains application email account."
+    }
+  ]
+}
