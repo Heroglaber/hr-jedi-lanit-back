@@ -8,11 +8,11 @@
       <bpmn2:outgoing>SequenceFlow_0x2uekh</bpmn2:outgoing>
     </bpmn2:startEvent>
     <bpmn2:sequenceFlow id="SequenceFlow_0x2uekh" sourceRef="StartEvent_1" targetRef="IntermediateThrowEvent_0222ylo" />
-    <bpmn2:userTask id="Task_1w87wdd" name="Заполнить заявку на отпуск" camunda:assignee="${initiatorLogin}">
+    <bpmn2:userTask id="vacation-fill" name="Заполнить заявку на отпуск" camunda:assignee="${initiatorLogin}">
       <bpmn2:incoming>SequenceFlow_1ircahn</bpmn2:incoming>
       <bpmn2:outgoing>SequenceFlow_0fqenv0</bpmn2:outgoing>
     </bpmn2:userTask>
-    <bpmn2:userTask id="Task_0l852hm" name="Согласовать заявку">
+    <bpmn2:userTask id="vacation-accept" name="Согласовать заявку">
       <bpmn2:incoming>SequenceFlow_1n3hi8t</bpmn2:incoming>
       <bpmn2:outgoing>SequenceFlow_0q3b7s5</bpmn2:outgoing>
     </bpmn2:userTask>
@@ -21,27 +21,27 @@
       <bpmn2:outgoing>SequenceFlow_130j72h</bpmn2:outgoing>
       <bpmn2:outgoing>SequenceFlow_07httwo</bpmn2:outgoing>
     </bpmn2:exclusiveGateway>
-    <bpmn2:sequenceFlow id="SequenceFlow_0q3b7s5" sourceRef="Task_0l852hm" targetRef="ExclusiveGateway_1bc3ojx" />
+    <bpmn2:sequenceFlow id="SequenceFlow_0q3b7s5" sourceRef="vacation-accept" targetRef="ExclusiveGateway_1bc3ojx" />
     <bpmn2:sequenceFlow id="SequenceFlow_130j72h" name="Да" sourceRef="ExclusiveGateway_1bc3ojx" targetRef="IntermediateThrowEvent_1mdyabp">
       <bpmn2:conditionExpression xsi:type="bpmn2:tFormalExpression">${lastAction == 'approve'}</bpmn2:conditionExpression>
     </bpmn2:sequenceFlow>
-    <bpmn2:sequenceFlow id="SequenceFlow_07httwo" sourceRef="ExclusiveGateway_1bc3ojx" targetRef="IntermediateThrowEvent_1wmarn8">
+    <bpmn2:sequenceFlow id="SequenceFlow_07httwo" name="Нет" sourceRef="ExclusiveGateway_1bc3ojx" targetRef="ExclusiveGateway_08ptfev">
       <bpmn2:conditionExpression xsi:type="bpmn2:tFormalExpression">${lastAction == 'reject'}</bpmn2:conditionExpression>
     </bpmn2:sequenceFlow>
     <bpmn2:intermediateThrowEvent id="IntermediateThrowEvent_0ybspe9" name="На согласовании">
       <bpmn2:extensionElements>
         <camunda:executionListener event="start">
-          <camunda:script scriptFormat="groovy">status = "approval"</camunda:script>
+          <camunda:script scriptFormat="groovy">execution.getProcessInstance().setVariable("status", "approval");</camunda:script>
         </camunda:executionListener>
       </bpmn2:extensionElements>
       <bpmn2:incoming>SequenceFlow_1x5270c</bpmn2:incoming>
       <bpmn2:outgoing>SequenceFlow_1n3hi8t</bpmn2:outgoing>
     </bpmn2:intermediateThrowEvent>
-    <bpmn2:sequenceFlow id="SequenceFlow_1n3hi8t" sourceRef="IntermediateThrowEvent_0ybspe9" targetRef="Task_0l852hm" />
+    <bpmn2:sequenceFlow id="SequenceFlow_1n3hi8t" sourceRef="IntermediateThrowEvent_0ybspe9" targetRef="vacation-accept" />
     <bpmn2:intermediateThrowEvent id="IntermediateThrowEvent_0222ylo" name="Новая">
       <bpmn2:extensionElements>
         <camunda:executionListener event="start">
-          <camunda:script scriptFormat="groovy">status = "new"</camunda:script>
+          <camunda:script scriptFormat="groovy">execution.getProcessInstance().setVariable("status", "new");</camunda:script>
         </camunda:executionListener>
       </bpmn2:extensionElements>
       <bpmn2:incoming>SequenceFlow_0x2uekh</bpmn2:incoming>
@@ -51,7 +51,7 @@
     <bpmn2:intermediateThrowEvent id="IntermediateThrowEvent_1mdyabp" name="Согласована">
       <bpmn2:extensionElements>
         <camunda:executionListener event="start">
-          <camunda:script scriptFormat="groovy">status = "approved"</camunda:script>
+          <camunda:script scriptFormat="groovy">execution.getProcessInstance().setVariable("status", "approved");</camunda:script>
         </camunda:executionListener>
       </bpmn2:extensionElements>
       <bpmn2:incoming>SequenceFlow_130j72h</bpmn2:incoming>
@@ -60,21 +60,21 @@
     <bpmn2:intermediateThrowEvent id="IntermediateThrowEvent_1wmarn8" name="На уточнении">
       <bpmn2:extensionElements>
         <camunda:executionListener event="start">
-          <camunda:script scriptFormat="groovy">status = "correction"</camunda:script>
+          <camunda:script scriptFormat="groovy">execution.getProcessInstance().setVariable("status", "correction");</camunda:script>
         </camunda:executionListener>
       </bpmn2:extensionElements>
-      <bpmn2:incoming>SequenceFlow_07httwo</bpmn2:incoming>
+      <bpmn2:incoming>SequenceFlow_1j9vxtu</bpmn2:incoming>
       <bpmn2:outgoing>SequenceFlow_0k4f63u</bpmn2:outgoing>
     </bpmn2:intermediateThrowEvent>
     <bpmn2:sequenceFlow id="SequenceFlow_0k4f63u" sourceRef="IntermediateThrowEvent_1wmarn8" targetRef="ExclusiveGateway_10q0w50" />
     <bpmn2:endEvent id="EndEvent_1093ysn" name="Заявка отменена">
       <bpmn2:incoming>SequenceFlow_1tvnk0n</bpmn2:incoming>
     </bpmn2:endEvent>
-    <bpmn2:sequenceFlow id="SequenceFlow_0fqenv0" sourceRef="Task_1w87wdd" targetRef="ExclusiveGateway_0knu8lu" />
+    <bpmn2:sequenceFlow id="SequenceFlow_0fqenv0" sourceRef="vacation-fill" targetRef="ExclusiveGateway_0knu8lu" />
     <bpmn2:intermediateThrowEvent id="IntermediateThrowEvent_1hsq1js" name="Не актуальна">
       <bpmn2:extensionElements>
         <camunda:executionListener event="start">
-          <camunda:script scriptFormat="groovy">status = "revoked"</camunda:script>
+          <camunda:script scriptFormat="groovy">execution.getProcessInstance().setVariable("status", "canceled");</camunda:script>
         </camunda:executionListener>
       </bpmn2:extensionElements>
       <bpmn2:incoming>SequenceFlow_1cczbe4</bpmn2:incoming>
@@ -90,19 +90,31 @@
       <bpmn2:conditionExpression xsi:type="bpmn2:tFormalExpression">${lastAction == 'submit'}</bpmn2:conditionExpression>
     </bpmn2:sequenceFlow>
     <bpmn2:sequenceFlow id="SequenceFlow_1cczbe4" name="Нет" sourceRef="ExclusiveGateway_0knu8lu" targetRef="IntermediateThrowEvent_1hsq1js">
-      <bpmn2:conditionExpression xsi:type="bpmn2:tFormalExpression">${lastAction == 'revoke'}</bpmn2:conditionExpression>
+      <bpmn2:conditionExpression xsi:type="bpmn2:tFormalExpression">${lastAction == 'cancel'}</bpmn2:conditionExpression>
     </bpmn2:sequenceFlow>
     <bpmn2:exclusiveGateway id="ExclusiveGateway_10q0w50">
       <bpmn2:incoming>SequenceFlow_1nkz5oy</bpmn2:incoming>
       <bpmn2:incoming>SequenceFlow_0k4f63u</bpmn2:incoming>
       <bpmn2:outgoing>SequenceFlow_1ircahn</bpmn2:outgoing>
     </bpmn2:exclusiveGateway>
-    <bpmn2:sequenceFlow id="SequenceFlow_1ircahn" sourceRef="ExclusiveGateway_10q0w50" targetRef="Task_1w87wdd" />
+    <bpmn2:sequenceFlow id="SequenceFlow_1ircahn" sourceRef="ExclusiveGateway_10q0w50" targetRef="vacation-fill" />
     <bpmn2:endEvent id="EndEvent_06w5zq4" name="Заявка выполнена">
       <bpmn2:incoming>SequenceFlow_1ooogri</bpmn2:incoming>
     </bpmn2:endEvent>
     <bpmn2:sequenceFlow id="SequenceFlow_1ooogri" sourceRef="IntermediateThrowEvent_1mdyabp" targetRef="EndEvent_06w5zq4" />
+    <bpmn2:boundaryEvent id="IntermediateThrowEvent_0qnclq7" name="Корректировка" attachedToRef="vacation-accept">
+      <bpmn2:outgoing>SequenceFlow_02px4bm</bpmn2:outgoing>
+      <bpmn2:messageEventDefinition id="MessageEventDefinition_0igode7" messageRef="Message_0zh4aor" />
+    </bpmn2:boundaryEvent>
+    <bpmn2:exclusiveGateway id="ExclusiveGateway_08ptfev">
+      <bpmn2:incoming>SequenceFlow_07httwo</bpmn2:incoming>
+      <bpmn2:incoming>SequenceFlow_02px4bm</bpmn2:incoming>
+      <bpmn2:outgoing>SequenceFlow_1j9vxtu</bpmn2:outgoing>
+    </bpmn2:exclusiveGateway>
+    <bpmn2:sequenceFlow id="SequenceFlow_1j9vxtu" sourceRef="ExclusiveGateway_08ptfev" targetRef="IntermediateThrowEvent_1wmarn8" />
+    <bpmn2:sequenceFlow id="SequenceFlow_02px4bm" sourceRef="IntermediateThrowEvent_0qnclq7" targetRef="ExclusiveGateway_08ptfev" />
   </bpmn2:process>
+  <bpmn2:message id="Message_0zh4aor" name="Revoke" />
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="vacation-approval">
       <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="StartEvent_1">
@@ -115,10 +127,10 @@
         <di:waypoint x="218" y="170" />
         <di:waypoint x="272" y="170" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNShape id="UserTask_0yers3t_di" bpmnElement="Task_1w87wdd">
+      <bpmndi:BPMNShape id="UserTask_0yers3t_di" bpmnElement="vacation-fill">
         <dc:Bounds x="440" y="130" width="100" height="80" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="UserTask_1dkf7hl_di" bpmnElement="Task_0l852hm">
+      <bpmndi:BPMNShape id="UserTask_1dkf7hl_di" bpmnElement="vacation-accept">
         <dc:Bounds x="780" y="130" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="ExclusiveGateway_1bc3ojx_di" bpmnElement="ExclusiveGateway_1bc3ojx" isMarkerVisible="true">
@@ -141,7 +153,10 @@
       <bpmndi:BPMNEdge id="SequenceFlow_07httwo_di" bpmnElement="SequenceFlow_07httwo">
         <di:waypoint x="980" y="195" />
         <di:waypoint x="980" y="330" />
-        <di:waypoint x="718" y="330" />
+        <di:waypoint x="905" y="330" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="990" y="223" width="20" height="14" />
+        </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="IntermediateThrowEvent_0ybspe9_di" bpmnElement="IntermediateThrowEvent_0ybspe9">
         <dc:Bounds x="692" y="152" width="36" height="36" />
@@ -237,6 +252,23 @@
       <bpmndi:BPMNEdge id="SequenceFlow_1ooogri_di" bpmnElement="SequenceFlow_1ooogri">
         <di:waypoint x="1088" y="170" />
         <di:waypoint x="1142" y="170" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="BoundaryEvent_0kopp3u_di" bpmnElement="IntermediateThrowEvent_0qnclq7">
+        <dc:Bounds x="862" y="192" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="891" y="233" width="77" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="ExclusiveGateway_08ptfev_di" bpmnElement="ExclusiveGateway_08ptfev" isMarkerVisible="true">
+        <dc:Bounds x="855" y="305" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="SequenceFlow_1j9vxtu_di" bpmnElement="SequenceFlow_1j9vxtu">
+        <di:waypoint x="855" y="330" />
+        <di:waypoint x="718" y="330" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_02px4bm_di" bpmnElement="SequenceFlow_02px4bm">
+        <di:waypoint x="880" y="228" />
+        <di:waypoint x="880" y="305" />
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>
