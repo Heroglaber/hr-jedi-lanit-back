@@ -25,7 +25,7 @@
     <bpmn2:sequenceFlow id="SequenceFlow_130j72h" name="Да" sourceRef="ExclusiveGateway_1bc3ojx" targetRef="IntermediateThrowEvent_1mdyabp">
       <bpmn2:conditionExpression xsi:type="bpmn2:tFormalExpression">${lastAction == 'approve'}</bpmn2:conditionExpression>
     </bpmn2:sequenceFlow>
-    <bpmn2:sequenceFlow id="SequenceFlow_07httwo" name="Нет" sourceRef="ExclusiveGateway_1bc3ojx" targetRef="ExclusiveGateway_08ptfev">
+    <bpmn2:sequenceFlow id="SequenceFlow_07httwo" sourceRef="ExclusiveGateway_1bc3ojx" targetRef="IntermediateThrowEvent_1wmarn8">
       <bpmn2:conditionExpression xsi:type="bpmn2:tFormalExpression">${lastAction == 'reject'}</bpmn2:conditionExpression>
     </bpmn2:sequenceFlow>
     <bpmn2:intermediateThrowEvent id="IntermediateThrowEvent_0ybspe9" name="На согласовании">
@@ -63,7 +63,7 @@
           <camunda:script scriptFormat="groovy">execution.getProcessInstance().setVariable("status", "correction");</camunda:script>
         </camunda:executionListener>
       </bpmn2:extensionElements>
-      <bpmn2:incoming>SequenceFlow_1j9vxtu</bpmn2:incoming>
+      <bpmn2:incoming>SequenceFlow_07httwo</bpmn2:incoming>
       <bpmn2:outgoing>SequenceFlow_0k4f63u</bpmn2:outgoing>
     </bpmn2:intermediateThrowEvent>
     <bpmn2:sequenceFlow id="SequenceFlow_0k4f63u" sourceRef="IntermediateThrowEvent_1wmarn8" targetRef="ExclusiveGateway_10q0w50" />
@@ -102,17 +102,6 @@
       <bpmn2:incoming>SequenceFlow_1ooogri</bpmn2:incoming>
     </bpmn2:endEvent>
     <bpmn2:sequenceFlow id="SequenceFlow_1ooogri" sourceRef="IntermediateThrowEvent_1mdyabp" targetRef="EndEvent_06w5zq4" />
-    <bpmn2:boundaryEvent id="IntermediateThrowEvent_0qnclq7" name="Корректировка" attachedToRef="vacation-accept">
-      <bpmn2:outgoing>SequenceFlow_02px4bm</bpmn2:outgoing>
-      <bpmn2:messageEventDefinition id="MessageEventDefinition_0igode7" messageRef="Message_0zh4aor" />
-    </bpmn2:boundaryEvent>
-    <bpmn2:exclusiveGateway id="ExclusiveGateway_08ptfev">
-      <bpmn2:incoming>SequenceFlow_07httwo</bpmn2:incoming>
-      <bpmn2:incoming>SequenceFlow_02px4bm</bpmn2:incoming>
-      <bpmn2:outgoing>SequenceFlow_1j9vxtu</bpmn2:outgoing>
-    </bpmn2:exclusiveGateway>
-    <bpmn2:sequenceFlow id="SequenceFlow_1j9vxtu" sourceRef="ExclusiveGateway_08ptfev" targetRef="IntermediateThrowEvent_1wmarn8" />
-    <bpmn2:sequenceFlow id="SequenceFlow_02px4bm" sourceRef="IntermediateThrowEvent_0qnclq7" targetRef="ExclusiveGateway_08ptfev" />
   </bpmn2:process>
   <bpmn2:message id="Message_0zh4aor" name="Revoke" />
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
@@ -153,9 +142,9 @@
       <bpmndi:BPMNEdge id="SequenceFlow_07httwo_di" bpmnElement="SequenceFlow_07httwo">
         <di:waypoint x="980" y="195" />
         <di:waypoint x="980" y="330" />
-        <di:waypoint x="905" y="330" />
+        <di:waypoint x="718" y="330" />
         <bpmndi:BPMNLabel>
-          <dc:Bounds x="990" y="223" width="20" height="14" />
+          <dc:Bounds x="960" y="385" width="20" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="IntermediateThrowEvent_0ybspe9_di" bpmnElement="IntermediateThrowEvent_0ybspe9">
@@ -252,23 +241,6 @@
       <bpmndi:BPMNEdge id="SequenceFlow_1ooogri_di" bpmnElement="SequenceFlow_1ooogri">
         <di:waypoint x="1088" y="170" />
         <di:waypoint x="1142" y="170" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNShape id="BoundaryEvent_0kopp3u_di" bpmnElement="IntermediateThrowEvent_0qnclq7">
-        <dc:Bounds x="862" y="192" width="36" height="36" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="891" y="233" width="77" height="14" />
-        </bpmndi:BPMNLabel>
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="ExclusiveGateway_08ptfev_di" bpmnElement="ExclusiveGateway_08ptfev" isMarkerVisible="true">
-        <dc:Bounds x="855" y="305" width="50" height="50" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNEdge id="SequenceFlow_1j9vxtu_di" bpmnElement="SequenceFlow_1j9vxtu">
-        <di:waypoint x="855" y="330" />
-        <di:waypoint x="718" y="330" />
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="SequenceFlow_02px4bm_di" bpmnElement="SequenceFlow_02px4bm">
-        <di:waypoint x="880" y="228" />
-        <di:waypoint x="880" y="305" />
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>
