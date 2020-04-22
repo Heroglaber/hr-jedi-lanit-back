@@ -6,6 +6,16 @@
       "description": "JWT expiration time in seconds."
     },
     {
+      "name": "ru.lanit.bpm.jedu.hrjedi.queues.2t-cv-request",
+      "type": "java.lang.String",
+      "description": "2T-Accounting CreateVacationDocument service request queue."
+    },
+    {
+      "name": "ru.lanit.bpm.jedu.hrjedi.queues.2t-cv-response",
+      "type": "java.lang.String",
+      "description": "2T-Accounting CreateVacationDocument service response queue."
+    },
+    {
       "name": "ru.lanit.bpm.jedu.hrjedi.email.mode",
       "type": "java.lang.String",
       "description": "Mode in which application sends emails: off - messaging is turned off, dev - messages are sent to application email address, prod - messages are sent to actual recipients."

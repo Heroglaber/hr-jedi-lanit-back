@@ -7,6 +7,8 @@ spring:
     username: sa
     password:
   h2.console.enabled: true
+  jms.template:
+    receive-timeout: 1000
 
 # Camunda
 camunda.bpm:
@@ -18,12 +20,24 @@ camunda.bpm:
   job-execution:
     enabled: true
 
+# JMS Connection
+#ibm:
+#  mq:
+#    queueManager: todo
+#    channel: todo
+#    connName: todo
+#    user: todo
+#    password: todo
+
 # App Properties
 ru:
   lanit:
     bpm:
       jedu:
         hrjedi:
+          queues:
+            2t-cv-request: 2t-create-vacation-documents-request
+            2t-cv-response: 2t-create-vacation-documents-response
           jwtExpiration: 3600
           email:
             #Mode in which application sends emails:
