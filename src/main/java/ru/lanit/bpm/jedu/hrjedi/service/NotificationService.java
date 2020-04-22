@@ -13,10 +13,9 @@
  */
 package ru.lanit.bpm.jedu.hrjedi.service;
 
-import ru.lanit.bpm.jedu.hrjedi.model.Employee;
 import ru.lanit.bpm.jedu.hrjedi.model.Vacation;
 
 public interface NotificationService {
 
-    void notifyOnVacationApproval(Employee employee, Vacation approvedVacation);
+    void notifyOnVacationApproval(Vacation approvedVacation);
 }

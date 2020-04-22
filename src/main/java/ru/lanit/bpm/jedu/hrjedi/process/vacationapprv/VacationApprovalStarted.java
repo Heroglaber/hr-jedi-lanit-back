@@ -11,17 +11,15 @@
  *
  * $
  */
-package ru.lanit.bpm.jedu.hrjedi.process.va;
+package ru.lanit.bpm.jedu.hrjedi.process.vacationapprv;
 
 import org.camunda.bpm.engine.IdentityService;
 import org.camunda.bpm.engine.delegate.DelegateExecution;
 import org.camunda.bpm.engine.delegate.JavaDelegate;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
 import ru.lanit.bpm.jedu.hrjedi.model.Employee;
 import ru.lanit.bpm.jedu.hrjedi.model.Vacation;
-import ru.lanit.bpm.jedu.hrjedi.repository.EmployeeRepository;
-import ru.lanit.bpm.jedu.hrjedi.repository.VacationRepository;
+import ru.lanit.bpm.jedu.hrjedi.service.EmployeeService;
 
 /**
  * Vacation Approval process start handler
@@ -31,37 +29,34 @@ public class VacationApprovalStarted implements JavaDelegate {
 
     private IdentityService camundaIdentityService;
 
-    private VacationRepository vacationRepository;
+    private EmployeeService employeeService;
 
-    private EmployeeRepository employeeRepository;
-
-    public VacationApprovalStarted(IdentityService camundaIdentityService, VacationRepository vacationRepository, EmployeeRepository employeeRepository) {
+    public VacationApprovalStarted(IdentityService camundaIdentityService, EmployeeService employeeService) {
         this.camundaIdentityService = camundaIdentityService;
-        this.vacationRepository = vacationRepository;
-        this.employeeRepository = employeeRepository;
+        this.employeeService = employeeService;
     }
 
     @Override
     public void execute(DelegateExecution process) {
         String initiatorLogin = getInitiatorLogin();
+        Employee employee = employeeService.findByLogin(initiatorLogin);
         Vacation vacation = new Vacation();
-        Employee employee = employeeRepository.findByLogin(initiatorLogin)
-            .orElseThrow(() -> new UsernameNotFoundException("User Not Found with -> username: " + initiatorLogin));
         vacation.setEmployee(employee);
-        vacation = vacationRepository.save(vacation);
-        String businessKey = getBusinessKey(vacation);
-        process.setProcessBusinessKey(businessKey);
-        process.setVariable("businessKey", businessKey);
+        Employee approver = employeeService.findWellKnownEmployeeHeadOfHr();
+
+        process.setProcessBusinessKey(getBusinessKey(process));
         process.setVariable("initiatorLogin", initiatorLogin);
-        process.setVariable("name", getProcessName(employee));
+        process.setVariable("approverLogin", approver.getLogin());
+        process.setVariable("processName", getProcessName(employee));
+        process.setVariable("vacation", vacation);
     }
 
     private String getInitiatorLogin() {
         return camundaIdentityService.getCurrentAuthentication().getUserId();
     }
 
-    private String getBusinessKey(Vacation vacation) {
-        return "ОТПУСК-" + vacation.getId();
+    private String getBusinessKey(DelegateExecution process) {
+        return "ОТПУСК-" + process.getId();
     }
 
     private String getProcessName(Employee initiator) {

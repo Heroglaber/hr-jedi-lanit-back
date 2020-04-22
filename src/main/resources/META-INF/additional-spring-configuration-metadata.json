@@ -39,6 +39,11 @@
       "name": "ru.lanit.bpm.jedu.hrjedi.email.smtp.port",
       "type": "java.lang.String",
       "description": "Port of smtp mail server that maintains application email account."
+    },
+    {
+      "name": "ru.lanit.bpm.jedu.hrjedi.headOfHrLogin",
+      "type": "java.lang.String",
+      "description": "Login of the head of the HR department."
     }
   ]
 }

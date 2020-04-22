@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<bpmn2:definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:bpmn2="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" id="sample-diagram" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="3.6.0" xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd">
+<bpmn2:definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:bpmn2="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" id="sample-diagram" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="3.1.0" xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd">
   <bpmn2:process id="vacation-approval" isExecutable="true">
     <bpmn2:startEvent id="StartEvent_1" name="Заявка создана">
       <bpmn2:extensionElements>
@@ -8,11 +8,19 @@
       <bpmn2:outgoing>SequenceFlow_0x2uekh</bpmn2:outgoing>
     </bpmn2:startEvent>
     <bpmn2:sequenceFlow id="SequenceFlow_0x2uekh" sourceRef="StartEvent_1" targetRef="IntermediateThrowEvent_0222ylo" />
-    <bpmn2:userTask id="vacation-fill" name="Заполнить заявку на отпуск" camunda:assignee="${initiatorLogin}">
+    <bpmn2:userTask id="prepare-request" name="Заполнить заявку на отпуск" camunda:formKey="vacation-approval:prepare-request" camunda:assignee="${initiatorLogin}">
+      <bpmn2:extensionElements>
+        <camunda:executionListener delegateExpression="${vacationApprovalCommonTaskCreate}" event="start" />
+        <camunda:executionListener delegateExpression="${vacationApprovalCommonTaskComplete}" event="end" />
+      </bpmn2:extensionElements>
       <bpmn2:incoming>SequenceFlow_1ircahn</bpmn2:incoming>
       <bpmn2:outgoing>SequenceFlow_0fqenv0</bpmn2:outgoing>
     </bpmn2:userTask>
-    <bpmn2:userTask id="vacation-accept" name="Согласовать заявку">
+    <bpmn2:userTask id="approve-request" name="Согласовать заявку" camunda:formKey="vacation-approval:approve-request" camunda:assignee="${approverLogin}">
+      <bpmn2:extensionElements>
+        <camunda:executionListener delegateExpression="${vacationApprovalCommonTaskCreate}" event="start" />
+        <camunda:executionListener delegateExpression="${vacationApprovalApproveRequestComplete}" event="end" />
+      </bpmn2:extensionElements>
       <bpmn2:incoming>SequenceFlow_1n3hi8t</bpmn2:incoming>
       <bpmn2:outgoing>SequenceFlow_0q3b7s5</bpmn2:outgoing>
     </bpmn2:userTask>
@@ -21,12 +29,9 @@
       <bpmn2:outgoing>SequenceFlow_130j72h</bpmn2:outgoing>
       <bpmn2:outgoing>SequenceFlow_07httwo</bpmn2:outgoing>
     </bpmn2:exclusiveGateway>
-    <bpmn2:sequenceFlow id="SequenceFlow_0q3b7s5" sourceRef="vacation-accept" targetRef="ExclusiveGateway_1bc3ojx" />
+    <bpmn2:sequenceFlow id="SequenceFlow_0q3b7s5" sourceRef="approve-request" targetRef="ExclusiveGateway_1bc3ojx" />
     <bpmn2:sequenceFlow id="SequenceFlow_130j72h" name="Да" sourceRef="ExclusiveGateway_1bc3ojx" targetRef="IntermediateThrowEvent_1mdyabp">
       <bpmn2:conditionExpression xsi:type="bpmn2:tFormalExpression">${lastAction == 'approve'}</bpmn2:conditionExpression>
-    </bpmn2:sequenceFlow>
-    <bpmn2:sequenceFlow id="SequenceFlow_07httwo" sourceRef="ExclusiveGateway_1bc3ojx" targetRef="IntermediateThrowEvent_1wmarn8">
-      <bpmn2:conditionExpression xsi:type="bpmn2:tFormalExpression">${lastAction == 'reject'}</bpmn2:conditionExpression>
     </bpmn2:sequenceFlow>
     <bpmn2:intermediateThrowEvent id="IntermediateThrowEvent_0ybspe9" name="На согласовании">
       <bpmn2:extensionElements>
@@ -37,7 +42,7 @@
       <bpmn2:incoming>SequenceFlow_1x5270c</bpmn2:incoming>
       <bpmn2:outgoing>SequenceFlow_1n3hi8t</bpmn2:outgoing>
     </bpmn2:intermediateThrowEvent>
-    <bpmn2:sequenceFlow id="SequenceFlow_1n3hi8t" sourceRef="IntermediateThrowEvent_0ybspe9" targetRef="vacation-accept" />
+    <bpmn2:sequenceFlow id="SequenceFlow_1n3hi8t" sourceRef="IntermediateThrowEvent_0ybspe9" targetRef="approve-request" />
     <bpmn2:intermediateThrowEvent id="IntermediateThrowEvent_0222ylo" name="Новая">
       <bpmn2:extensionElements>
         <camunda:executionListener event="start">
@@ -70,7 +75,7 @@
     <bpmn2:endEvent id="EndEvent_1093ysn" name="Заявка отменена">
       <bpmn2:incoming>SequenceFlow_1tvnk0n</bpmn2:incoming>
     </bpmn2:endEvent>
-    <bpmn2:sequenceFlow id="SequenceFlow_0fqenv0" sourceRef="vacation-fill" targetRef="ExclusiveGateway_0knu8lu" />
+    <bpmn2:sequenceFlow id="SequenceFlow_0fqenv0" sourceRef="prepare-request" targetRef="ExclusiveGateway_0knu8lu" />
     <bpmn2:intermediateThrowEvent id="IntermediateThrowEvent_1hsq1js" name="Не актуальна">
       <bpmn2:extensionElements>
         <camunda:executionListener event="start">
@@ -97,11 +102,14 @@
       <bpmn2:incoming>SequenceFlow_0k4f63u</bpmn2:incoming>
       <bpmn2:outgoing>SequenceFlow_1ircahn</bpmn2:outgoing>
     </bpmn2:exclusiveGateway>
-    <bpmn2:sequenceFlow id="SequenceFlow_1ircahn" sourceRef="ExclusiveGateway_10q0w50" targetRef="vacation-fill" />
+    <bpmn2:sequenceFlow id="SequenceFlow_1ircahn" sourceRef="ExclusiveGateway_10q0w50" targetRef="prepare-request" />
     <bpmn2:endEvent id="EndEvent_06w5zq4" name="Заявка выполнена">
       <bpmn2:incoming>SequenceFlow_1ooogri</bpmn2:incoming>
     </bpmn2:endEvent>
     <bpmn2:sequenceFlow id="SequenceFlow_1ooogri" sourceRef="IntermediateThrowEvent_1mdyabp" targetRef="EndEvent_06w5zq4" />
+    <bpmn2:sequenceFlow id="SequenceFlow_07httwo" name="Нет" sourceRef="ExclusiveGateway_1bc3ojx" targetRef="IntermediateThrowEvent_1wmarn8">
+      <bpmn2:conditionExpression xsi:type="bpmn2:tFormalExpression">${lastAction == 'reject'}</bpmn2:conditionExpression>
+    </bpmn2:sequenceFlow>
   </bpmn2:process>
   <bpmn2:message id="Message_0zh4aor" name="Revoke" />
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
@@ -116,10 +124,10 @@
         <di:waypoint x="218" y="170" />
         <di:waypoint x="272" y="170" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNShape id="UserTask_0yers3t_di" bpmnElement="vacation-fill">
+      <bpmndi:BPMNShape id="UserTask_0yers3t_di" bpmnElement="prepare-request">
         <dc:Bounds x="440" y="130" width="100" height="80" />
       </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="UserTask_1dkf7hl_di" bpmnElement="vacation-accept">
+      <bpmndi:BPMNShape id="UserTask_1dkf7hl_di" bpmnElement="approve-request">
         <dc:Bounds x="780" y="130" width="100" height="80" />
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="ExclusiveGateway_1bc3ojx_di" bpmnElement="ExclusiveGateway_1bc3ojx" isMarkerVisible="true">
@@ -137,14 +145,6 @@
         <di:waypoint x="1052" y="170" />
         <bpmndi:BPMNLabel>
           <dc:Bounds x="1022" y="152" width="14" height="14" />
-        </bpmndi:BPMNLabel>
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="SequenceFlow_07httwo_di" bpmnElement="SequenceFlow_07httwo">
-        <di:waypoint x="980" y="195" />
-        <di:waypoint x="980" y="330" />
-        <di:waypoint x="718" y="330" />
-        <bpmndi:BPMNLabel>
-          <dc:Bounds x="960" y="385" width="20" height="14" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="IntermediateThrowEvent_0ybspe9_di" bpmnElement="IntermediateThrowEvent_0ybspe9">
@@ -241,6 +241,14 @@
       <bpmndi:BPMNEdge id="SequenceFlow_1ooogri_di" bpmnElement="SequenceFlow_1ooogri">
         <di:waypoint x="1088" y="170" />
         <di:waypoint x="1142" y="170" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_07httwo_di" bpmnElement="SequenceFlow_07httwo">
+        <di:waypoint x="980" y="195" />
+        <di:waypoint x="980" y="330" />
+        <di:waypoint x="718" y="330" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="990" y="223" width="20" height="14" />
+        </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>

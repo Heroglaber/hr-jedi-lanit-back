@@ -35,6 +35,7 @@ ru:
     bpm:
       jedu:
         hrjedi:
+          headOfHrLogin: hrhr
           queues:
             2t-cv-request: 2t-create-vacation-documents-request
             2t-cv-response: 2t-create-vacation-documents-response

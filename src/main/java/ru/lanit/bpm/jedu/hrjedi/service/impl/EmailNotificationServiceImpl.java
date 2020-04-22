@@ -70,7 +70,9 @@ public class EmailNotificationServiceImpl implements NotificationService {
 
     @Transactional
     @Override
-    public void notifyOnVacationApproval(Employee employee, Vacation approvedVacation) {
+    public void notifyOnVacationApproval(Vacation approvedVacation) {
+        Employee employee = approvedVacation.getEmployee();
+
         LOGGER.info("Attemping to notify {} on vacation approval", employee.getLogin());
 
         String employeeFirstName = employee.getFirstName();

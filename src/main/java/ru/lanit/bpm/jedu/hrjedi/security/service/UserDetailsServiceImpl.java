@@ -13,27 +13,26 @@
  */
 package ru.lanit.bpm.jedu.hrjedi.security.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.lanit.bpm.jedu.hrjedi.model.Employee;
-import ru.lanit.bpm.jedu.hrjedi.repository.EmployeeRepository;
+import ru.lanit.bpm.jedu.hrjedi.service.EmployeeService;
 
 @Service
 public class UserDetailsServiceImpl implements UserDetailsService {
-    @Autowired
-    EmployeeRepository employeeRepository;
+    private EmployeeService employeeService;
+
+    public UserDetailsServiceImpl(EmployeeService employeeService) {
+        this.employeeService = employeeService;
+    }
 
     @Override
     @Transactional
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        Employee user = employeeRepository.findByLogin(username.trim().toLowerCase())
-                  .orElseThrow(() ->
-                        new UsernameNotFoundException("User Not Found with -> username: " + username)
-        );
+        Employee user = employeeService.findByLogin(username);
 
         return UserPrinciple.build(user);
     }

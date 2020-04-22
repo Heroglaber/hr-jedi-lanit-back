@@ -11,17 +11,13 @@
  *
  * $
  */
-package ru.lanit.bpm.jedu.hrjedi.repository;
+package ru.lanit.bpm.jedu.hrjedi.service;
 
-import org.springframework.data.jpa.repository.JpaRepository;
 import ru.lanit.bpm.jedu.hrjedi.model.Employee;
 
-import java.util.Optional;
+public interface EmployeeService {
 
-public interface EmployeeRepository extends JpaRepository<Employee, Long> {
-    Optional<Employee> findByLoginIgnoreCase(String login);
+    Employee findByLogin(String login);
 
-    Boolean existsByLogin(String login);
-
-    Boolean existsByEmail(String email);
+    Employee findWellKnownEmployeeHeadOfHr();
 }

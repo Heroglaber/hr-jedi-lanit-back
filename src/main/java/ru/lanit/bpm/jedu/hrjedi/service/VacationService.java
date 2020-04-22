@@ -11,17 +11,11 @@
  *
  * $
  */
-package ru.lanit.bpm.jedu.hrjedi.repository;
+package ru.lanit.bpm.jedu.hrjedi.service;
 
-import org.springframework.data.jpa.repository.JpaRepository;
-import ru.lanit.bpm.jedu.hrjedi.model.Employee;
+import ru.lanit.bpm.jedu.hrjedi.model.Vacation;
 
-import java.util.Optional;
+public interface VacationService {
 
-public interface EmployeeRepository extends JpaRepository<Employee, Long> {
-    Optional<Employee> findByLoginIgnoreCase(String login);
-
-    Boolean existsByLogin(String login);
-
-    Boolean existsByEmail(String email);
+    void saveVacation(Vacation vacation);
 }
