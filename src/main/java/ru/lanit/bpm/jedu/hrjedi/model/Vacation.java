@@ -14,11 +14,13 @@
 package ru.lanit.bpm.jedu.hrjedi.model;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.time.LocalDate;
 
 @Entity
 @Table(name = "VACATION")
-public class Vacation {
+public class Vacation implements Serializable {
+    private static final long serialVersionUID = -5449326074498337967L;
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "vacation_id_generator")
     @SequenceGenerator(name = "vacation_id_generator", sequenceName = "sq_vacation_id", allocationSize = 1)

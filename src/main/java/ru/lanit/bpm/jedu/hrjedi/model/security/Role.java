@@ -16,10 +16,12 @@ package ru.lanit.bpm.jedu.hrjedi.model.security;
 import org.hibernate.annotations.NaturalId;
 
 import javax.persistence.*;
+import java.io.Serializable;
 
 @Entity
 @Table(name = "ROLE")
-public class Role {
+public class Role implements Serializable {
+    private static final long serialVersionUID = -5449326074498337967L;
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "role_id_generator")
     @SequenceGenerator(name = "role_id_generator", sequenceName = "sq_role_id", allocationSize = 1)

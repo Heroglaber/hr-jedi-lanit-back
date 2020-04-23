@@ -12,6 +12,7 @@ spring:
 
 # Camunda
 camunda.bpm:
+  default-serialization-format: application/json
   admin-user:
     id: admin
     password: admin
@@ -19,6 +20,7 @@ camunda.bpm:
     lastName: Camunda
   job-execution:
     enabled: true
+  id-generator: simple
 
 # JMS Connection
 #ibm:
@@ -35,7 +37,7 @@ ru:
     bpm:
       jedu:
         hrjedi:
-          headOfHrLogin: hrhr
+          headOfHrLogin: hr
           queues:
             2t-cv-request: 2t-create-vacation-documents-request
             2t-cv-response: 2t-create-vacation-documents-response

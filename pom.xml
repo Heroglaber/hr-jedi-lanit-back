@@ -26,6 +26,7 @@
         <commons-lang3.version>3.9</commons-lang3.version>
         <commons-collections4.version>4.4</commons-collections4.version>
         <commons-io.version>2.6</commons-io.version>
+        <camunda.version>7.12.0</camunda.version>
         <camunda-bpm-spring-boot.version>3.4.1</camunda-bpm-spring-boot.version>
         <mq-jms-spring-boot-starter.version>2.2.6</mq-jms-spring-boot-starter.version>
         <spring-boot.version>2.2.6.RELEASE</spring-boot.version>
@@ -47,6 +48,13 @@
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
+            <dependency>
+                <groupId>org.camunda.bpm</groupId>
+                <artifactId>camunda-bom</artifactId>
+                <version>${camunda.version}</version>
+                <scope>import</scope>
+                <type>pom</type>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
@@ -66,6 +74,20 @@
             <artifactId>mq-jms-spring-boot-starter</artifactId>
             <version>${mq-jms-spring-boot-starter.version}</version>
         </dependency>
+
+        <dependency>
+            <groupId>org.camunda.spin</groupId>
+            <artifactId>camunda-spin-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.camunda.spin</groupId>
+            <artifactId>camunda-spin-dataformat-json-jackson</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.camunda.bpm</groupId>
+            <artifactId>camunda-engine-plugin-spin</artifactId>
+        </dependency>
+
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-log4j2</artifactId>

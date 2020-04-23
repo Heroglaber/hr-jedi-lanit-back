@@ -10,16 +10,16 @@
     <bpmn2:sequenceFlow id="SequenceFlow_0x2uekh" sourceRef="StartEvent_1" targetRef="IntermediateThrowEvent_0222ylo" />
     <bpmn2:userTask id="prepare-request" name="Заполнить заявку на отпуск" camunda:formKey="vacation-approval:prepare-request" camunda:assignee="${initiatorLogin}">
       <bpmn2:extensionElements>
-        <camunda:executionListener delegateExpression="${vacationApprovalCommonTaskCreate}" event="start" />
-        <camunda:executionListener delegateExpression="${vacationApprovalCommonTaskComplete}" event="end" />
+        <camunda:taskListener delegateExpression="${vacationApprovalCommonTaskCreate}" event="create" />
+        <camunda:taskListener delegateExpression="${vacationApprovalCommonTaskComplete}" event="complete" />
       </bpmn2:extensionElements>
       <bpmn2:incoming>SequenceFlow_1ircahn</bpmn2:incoming>
       <bpmn2:outgoing>SequenceFlow_0fqenv0</bpmn2:outgoing>
     </bpmn2:userTask>
     <bpmn2:userTask id="approve-request" name="Согласовать заявку" camunda:formKey="vacation-approval:approve-request" camunda:assignee="${approverLogin}">
       <bpmn2:extensionElements>
-        <camunda:executionListener delegateExpression="${vacationApprovalCommonTaskCreate}" event="start" />
-        <camunda:executionListener delegateExpression="${vacationApprovalApproveRequestComplete}" event="end" />
+        <camunda:taskListener delegateExpression="${vacationApprovalCommonTaskCreate}" event="create" />
+        <camunda:taskListener delegateExpression="${vacationApprovalApproveRequestComplete}" event="complete" />
       </bpmn2:extensionElements>
       <bpmn2:incoming>SequenceFlow_1n3hi8t</bpmn2:incoming>
       <bpmn2:outgoing>SequenceFlow_0q3b7s5</bpmn2:outgoing>

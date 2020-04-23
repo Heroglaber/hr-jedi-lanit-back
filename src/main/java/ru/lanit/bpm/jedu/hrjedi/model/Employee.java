@@ -13,11 +13,13 @@
  */
 package ru.lanit.bpm.jedu.hrjedi.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.annotations.NaturalId;
 import ru.lanit.bpm.jedu.hrjedi.model.security.Role;
 import ru.lanit.bpm.jedu.hrjedi.model.security.State;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -27,7 +29,8 @@ import java.util.Set;
         "LOGIN"
     })
 })
-public class Employee {
+public class Employee implements Serializable {
+    private static final long serialVersionUID = -5449326074498337967L;
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "employee_id_generator")
     @SequenceGenerator(name = "employee_id_generator", sequenceName = "sq_employee_id", allocationSize = 1)
@@ -138,7 +141,7 @@ public class Employee {
     public void setLastName(String lastName) {
         this.lastName = lastName;
     }
-
+    @JsonIgnore
     public String getFullName() {
         return secondName == null ? String.format("%s %s", firstName, lastName) : String.format("%s %s %s", firstName, secondName, lastName);
     }
