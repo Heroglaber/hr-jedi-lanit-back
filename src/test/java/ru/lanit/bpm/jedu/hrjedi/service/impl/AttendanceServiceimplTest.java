@@ -16,6 +16,7 @@ package ru.lanit.bpm.jedu.hrjedi.service.impl;
 import org.apache.commons.collections4.SetUtils;
 import org.easymock.EasyMock;
 import org.easymock.TestSubject;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -27,25 +28,12 @@ import ru.lanit.bpm.jedu.hrjedi.service.DateTimeService;
 
 import java.time.Month;
 import java.time.YearMonth;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
-
-import static java.util.Arrays.asList;
-import static java.util.Collections.emptyList;
-import static org.junit.Assert.assertEquals;
 
 @RunWith(UnitilsBlockJUnit4ClassRunner.class)
 public class AttendanceServiceimplTest {
-    private static final int YEAR_2020 = 2020;
-    private static final YearMonth JANUARY_2020 = YearMonth.of(YEAR_2020, Month.JANUARY);
-    private static final YearMonth FEBRUARY_2020 = YearMonth.of(YEAR_2020, Month.FEBRUARY);
-    private static final YearMonth APRIL_2020 = YearMonth.of(YEAR_2020, Month.APRIL);
-    private static final YearMonth JUNE_2020 = YearMonth.of(YEAR_2020, Month.JUNE);
-    private static final YearMonth OCTOBER_2020 = YearMonth.of(YEAR_2020, Month.OCTOBER);
-    private static final YearMonth NOVEMBER_2020 = YearMonth.of(YEAR_2020, Month.NOVEMBER);
-    private static final YearMonth DECEMBER_2020 = YearMonth.of(YEAR_2020, Month.DECEMBER);
-    private static final int YEAR_2021 = 2021;
-    private static final YearMonth JANUARY_2021 = YearMonth.of(YEAR_2021, Month.JANUARY);
-
     @TestSubject
     AttendanceServiceimpl attendanceService = new AttendanceServiceimpl();
 
@@ -62,57 +50,65 @@ public class AttendanceServiceimplTest {
 
     @Test
     public void getMonthsWithoutAttendanceInfoByYear_currentYear() {
-        EasyMock.expect(dateTimeService.getCurrentMonth()).andReturn(NOVEMBER_2020);
-        EasyMock.expect(attendanceRepository.findMonthsValuesWithAttendanceInfoByYear(YEAR_2020))
-                .andReturn(SetUtils.hashSet(1, 3, 5, 7, 8, 9));
+        EasyMock.expect(dateTimeService.getCurrentMonth()).andReturn(YearMonth.of(2020, Month.NOVEMBER));
+        EasyMock.expect(attendanceRepository.findMonthsValuesWithAttendanceInfoByYear(2020)).andReturn(SetUtils.hashSet(1, 3, 5, 7, 8, 9));
         EasyMockUnitils.replay();
 
-        List<YearMonth> monthsWithoutAttendanceInfo = attendanceService.getMonthsWithoutAttendanceInfoByYear(YEAR_2020);
+        List<YearMonth> monthsWithoutAttendanceInfo = attendanceService.getMonthsWithoutAttendanceInfoByYear(2020);
 
-        assertEquals(asList(FEBRUARY_2020, APRIL_2020, JUNE_2020, OCTOBER_2020), monthsWithoutAttendanceInfo);
+        Assert.assertEquals(Arrays.asList(
+            YearMonth.of(2020, Month.FEBRUARY),
+            YearMonth.of(2020, Month.APRIL),
+            YearMonth.of(2020, Month.JUNE),
+            YearMonth.of(2020, Month.OCTOBER)
+        ), monthsWithoutAttendanceInfo);
     }
 
     @Test
     public void getMonthsWithoutAttendanceInfoByYear_currentYear_allRequiredMonthWithAttendanceInfo() {
-        EasyMock.expect(dateTimeService.getCurrentMonth()).andReturn(NOVEMBER_2020);
-        EasyMock.expect(attendanceRepository.findMonthsValuesWithAttendanceInfoByYear(YEAR_2020))
-                        .andReturn(SetUtils.hashSet(1, 2, 3, 4, 5, 6, 7, 8, 9, 10));
+        EasyMock.expect(dateTimeService.getCurrentMonth()).andReturn(YearMonth.of(2020, Month.NOVEMBER));
+        EasyMock.expect(attendanceRepository.findMonthsValuesWithAttendanceInfoByYear(2020)).andReturn(SetUtils.hashSet(1, 2, 3, 4, 5, 6, 7, 8, 9, 10));
         EasyMockUnitils.replay();
 
-        List<YearMonth> monthsWithoutAttendanceInfo = attendanceService.getMonthsWithoutAttendanceInfoByYear(YEAR_2020);
+        List<YearMonth> monthsWithoutAttendanceInfo = attendanceService.getMonthsWithoutAttendanceInfoByYear(2020);
 
-        assertEquals(emptyList(), monthsWithoutAttendanceInfo);
+        Assert.assertEquals(Collections.emptyList(), monthsWithoutAttendanceInfo);
     }
 
     @Test
     public void getMonthsWithoutAttendanceInfoByYear_futureYear() {
-        EasyMock.expect(dateTimeService.getCurrentMonth()).andReturn(NOVEMBER_2020);
+        EasyMock.expect(dateTimeService.getCurrentMonth()).andReturn(YearMonth.of(2020, Month.NOVEMBER));
         EasyMockUnitils.replay();
 
-        List<YearMonth> monthsWithoutAttendanceInfo = attendanceService.getMonthsWithoutAttendanceInfoByYear(YEAR_2021);
+        List<YearMonth> monthsWithoutAttendanceInfo = attendanceService.getMonthsWithoutAttendanceInfoByYear(2021);
 
-        assertEquals(emptyList(), monthsWithoutAttendanceInfo);
+        Assert.assertEquals(Collections.emptyList(), monthsWithoutAttendanceInfo);
     }
 
     @Test
     public void getMonthsWithoutAttendanceInfoByYear_futureCurrentJanuary() {
-        EasyMock.expect(dateTimeService.getCurrentMonth()).andReturn(JANUARY_2020);
+        EasyMock.expect(dateTimeService.getCurrentMonth()).andReturn(YearMonth.of(2020, Month.JANUARY));
         EasyMockUnitils.replay();
 
-        List<YearMonth> monthsWithoutAttendanceInfo = attendanceService.getMonthsWithoutAttendanceInfoByYear(YEAR_2020);
+        List<YearMonth> monthsWithoutAttendanceInfo = attendanceService.getMonthsWithoutAttendanceInfoByYear(2020);
 
-        assertEquals(emptyList(), monthsWithoutAttendanceInfo);
+        Assert.assertEquals(Collections.emptyList(), monthsWithoutAttendanceInfo);
     }
 
     @Test
     public void getMonthsWithoutAttendanceInfoByYear_forPastYear() {
-        EasyMock.expect(dateTimeService.getCurrentMonth()).andReturn(JANUARY_2021);
-        EasyMock.expect(attendanceRepository.findMonthsValuesWithAttendanceInfoByYear(YEAR_2020))
-                        .andReturn(SetUtils.hashSet(1, 3, 5, 7, 8, 9, 11));
+        EasyMock.expect(dateTimeService.getCurrentMonth()).andReturn(YearMonth.of(2021, Month.JANUARY));
+        EasyMock.expect(attendanceRepository.findMonthsValuesWithAttendanceInfoByYear(2020)).andReturn(SetUtils.hashSet(1, 3, 5, 7, 8, 9, 11));
         EasyMockUnitils.replay();
 
-        List<YearMonth> monthsWithoutAttendanceInfo = attendanceService.getMonthsWithoutAttendanceInfoByYear(YEAR_2020);
+        List<YearMonth> monthsWithoutAttendanceInfo = attendanceService.getMonthsWithoutAttendanceInfoByYear(2020);
 
-        assertEquals(asList(FEBRUARY_2020, APRIL_2020, JUNE_2020, OCTOBER_2020, DECEMBER_2020), monthsWithoutAttendanceInfo);
+        Assert.assertEquals(Arrays.asList(
+            YearMonth.of(2020, Month.FEBRUARY),
+            YearMonth.of(2020, Month.APRIL),
+            YearMonth.of(2020, Month.JUNE),
+            YearMonth.of(2020, Month.OCTOBER),
+            YearMonth.of(2020, Month.DECEMBER)
+        ), monthsWithoutAttendanceInfo);
     }
 }
