@@ -24,9 +24,9 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 public class UserPrinciple implements UserDetails {
-  private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID = 1L;
 
-  private Long id;
+    private Long id;
 
     private String login;
 
@@ -34,14 +34,17 @@ public class UserPrinciple implements UserDetails {
 
     private String password;
 
+    private String fullName;
+
     private Collection<? extends GrantedAuthority> authorities;
 
-    public UserPrinciple(Long id, String login, String email, String password, Collection<? extends GrantedAuthority> authorities) {
+    public UserPrinciple(Long id, String login, String email, String password, String fullName, Collection<? extends GrantedAuthority> authorities) {
         this.id = id;
         this.login = login;
         this.email = email;
         this.password = password;
         this.authorities = authorities;
+        this.fullName = fullName;
     }
 
     public Long getId() {
@@ -60,6 +63,10 @@ public class UserPrinciple implements UserDetails {
     @Override
     public String getPassword() {
         return password;
+    }
+
+    public String getFullName() {
+        return fullName;
     }
 
     @Override
@@ -102,11 +109,12 @@ public class UserPrinciple implements UserDetails {
             ).collect(Collectors.toList());
 
             return new UserPrinciple(
-                    user.getId(),
-                    user.getLogin(),
-                    user.getEmail(),
-                    user.getHashPassword(),
-                    authorities
+                user.getId(),
+                user.getLogin(),
+                user.getEmail(),
+                user.getHashPassword(),
+                user.getFullName(),
+                authorities
             );
         }
 }

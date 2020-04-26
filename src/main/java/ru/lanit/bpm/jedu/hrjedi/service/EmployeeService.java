@@ -15,9 +15,19 @@ package ru.lanit.bpm.jedu.hrjedi.service;
 
 import ru.lanit.bpm.jedu.hrjedi.model.Employee;
 
-public interface EmployeeService {
+import java.util.List;
+import java.util.Set;
 
+public interface EmployeeService {
     Employee findByLogin(String login);
 
     Employee findWellKnownEmployeeHeadOfHr();
+
+    List<Employee> getAll();
+
+    long getNumberOfAdmins();
+
+    Employee save(Employee employee);
+
+    void createEmployee(String login, String firstName, String secondName, String lastName, String password, String email, Set<String> rolesStrings);
 }

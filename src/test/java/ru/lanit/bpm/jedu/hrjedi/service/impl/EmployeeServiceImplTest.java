@@ -18,6 +18,7 @@ import org.easymock.TestSubject;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.unitils.UnitilsBlockJUnit4ClassRunner;
 import org.unitils.easymock.EasyMockUnitils;
 import org.unitils.easymock.annotation.Mock;
@@ -25,6 +26,8 @@ import ru.lanit.bpm.jedu.hrjedi.model.Employee;
 import ru.lanit.bpm.jedu.hrjedi.model.security.Role;
 import ru.lanit.bpm.jedu.hrjedi.model.security.RoleName;
 import ru.lanit.bpm.jedu.hrjedi.repository.EmployeeRepository;
+import ru.lanit.bpm.jedu.hrjedi.repository.RoleRepository;
+import ru.lanit.bpm.jedu.hrjedi.service.EmployeeService;
 
 import java.util.Collection;
 import java.util.HashSet;
@@ -35,32 +38,35 @@ import static org.junit.Assert.assertEquals;
 import static ru.lanit.bpm.jedu.hrjedi.model.security.RoleName.*;
 
 @RunWith(UnitilsBlockJUnit4ClassRunner.class)
-public class SecurityServiceImplTest {
-    @TestSubject
-    SecurityServiceImpl securityService = new SecurityServiceImpl();
-
+public class EmployeeServiceImplTest {
     @Mock
     EmployeeRepository employeeRepository;
+    @Mock
+    PasswordEncoder passwordEncoder;
+    @Mock
+    RoleRepository roleRepository;
+    @TestSubject
+    EmployeeService employeeService;
 
     @Before
-    public void setUp(){
-        securityService.setEmployeeRepository(employeeRepository);
+    public void setUp() {
+        employeeService = new EmployeeServiceImpl(employeeRepository, "HedOfHrLogin", passwordEncoder, roleRepository);
     }
 
     @Test
-    public void getNumberOfAdmins(){
+    public void getNumberOfAdmins() {
         EasyMock.expect(employeeRepository.findAll())
-                .andReturn(asList(
-                        user(singleton(role(ROLE_USER))),
-                        user(singleton(role(ROLE_OMNI))),
-                        user(asList(role(ROLE_USER), role(ROLE_OMNI))),
-                        user(asList(role(ROLE_USER), role(ROLE_ADMIN))),
-                        user(singleton(role(ROLE_ADMIN)))
+            .andReturn(asList(
+                user(singleton(role(ROLE_USER))),
+                user(singleton(role(ROLE_OMNI))),
+                user(asList(role(ROLE_USER), role(ROLE_OMNI))),
+                user(asList(role(ROLE_USER), role(ROLE_ADMIN))),
+                user(singleton(role(ROLE_ADMIN)))
 
-                ));
+            ));
         EasyMockUnitils.replay();
 
-        long numberOfAdmins = securityService.getNumberOfAdmins();
+        long numberOfAdmins = employeeService.getNumberOfAdmins();
 
         assertEquals(2, numberOfAdmins);
     }
@@ -69,14 +75,14 @@ public class SecurityServiceImplTest {
     // = Implementation
     // ===================================================================================================================
 
-    private Employee user(Collection<Role> roles){
+    private Employee user(Collection<Role> roles) {
         Employee user = new Employee();
         user.setRoles(new HashSet<>(roles));
 
         return user;
     }
 
-    private Role role(RoleName name){
+    private Role role(RoleName name) {
         Role role = new Role();
         role.setName(name);
 

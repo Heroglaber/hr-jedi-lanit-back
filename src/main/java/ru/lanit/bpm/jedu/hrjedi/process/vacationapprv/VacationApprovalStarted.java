@@ -43,11 +43,13 @@ public class VacationApprovalStarted implements JavaDelegate {
         Vacation vacation = new Vacation();
         vacation.setEmployee(employee);
         Employee approver = employeeService.findWellKnownEmployeeHeadOfHr();
+        String businessKey = getBusinessKey(process);
 
-        process.setProcessBusinessKey(getBusinessKey(process));
+        process.setProcessBusinessKey(businessKey);
         process.setVariable("initiatorLogin", initiatorLogin);
         process.setVariable("approverLogin", approver.getLogin());
         process.setVariable("processName", getProcessName(employee));
+        process.setVariable("processBusinessKey", businessKey);
         process.setVariable("vacation", vacation);
     }
 

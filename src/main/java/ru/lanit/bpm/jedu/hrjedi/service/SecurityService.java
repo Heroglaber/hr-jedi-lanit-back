@@ -20,12 +20,7 @@ import java.util.List;
 import java.util.Set;
 
 public interface SecurityService {
-
-    void registerEmployee(String login, String firstName, String secondName, String lastName, String password, String email, Set<String> rolesStrings);
-
     JwtResponse authenticateEmployee(String login, String password);
 
-    List<Employee> getAllUsers();
-
-    long getNumberOfAdmins();
+    Employee getCurrentEmployee();
 }

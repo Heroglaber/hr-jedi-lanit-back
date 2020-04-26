@@ -41,28 +41,4 @@ public class SecurityController {
         JwtResponse jwtResponse = securityService.authenticateEmployee(loginForm.getLogin(), loginForm.getPassword());
         return ResponseEntity.ok(jwtResponse);
     }
-
-    @PostMapping("/signup")
-    public ResponseEntity<String> registerEmployee(@RequestBody SignUpForm signUpRequest) {
-        try {
-            securityService.registerEmployee(
-                signUpRequest.getLogin(),
-                signUpRequest.getFirstName(),
-                signUpRequest.getSecondName(),
-                signUpRequest.getLastName(),
-                signUpRequest.getPassword(),
-                signUpRequest.getEmail(),
-                signUpRequest.getRoles());
-        } catch (EmployeeRegistrationException ex) {
-            return new ResponseEntity<>(ex.getMessage(), HttpStatus.BAD_REQUEST);
-        }
-
-        return ResponseEntity.ok("Employee registered successfully!");
-    }
-
-    @GetMapping("/user")
-    @PreAuthorize("hasRole('OMNI') or hasRole('ADMIN')")
-    public List<Employee> getAllUsers(){
-        return securityService.getAllUsers();
-    }
 }
