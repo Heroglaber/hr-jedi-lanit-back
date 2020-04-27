@@ -41,4 +41,9 @@ public class SecurityController {
         JwtResponse jwtResponse = securityService.authenticateEmployee(loginForm.getLogin(), loginForm.getPassword());
         return ResponseEntity.ok(jwtResponse);
     }
+
+    @GetMapping("/generate-pass")
+    public String generateSecurePassword() {
+        return securityService.generateSecurePassword();
+    }
 }
