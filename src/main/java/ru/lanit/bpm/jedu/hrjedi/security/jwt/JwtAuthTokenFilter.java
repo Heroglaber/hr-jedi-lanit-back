@@ -15,6 +15,7 @@ package ru.lanit.bpm.jedu.hrjedi.security.jwt;
 
 import org.camunda.bpm.engine.IdentityService;
 import org.camunda.bpm.engine.impl.identity.Authentication;
+import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,7 +47,7 @@ public class JwtAuthTokenFilter extends OncePerRequestFilter {
     private IdentityService camundaIdentityService;
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
+    protected void doFilterInternal(@NotNull HttpServletRequest request, @NotNull HttpServletResponse response, @NotNull FilterChain filterChain)
         throws ServletException, IOException {
         try {
             String jwt = getJwt(request);
@@ -66,7 +67,7 @@ public class JwtAuthTokenFilter extends OncePerRequestFilter {
                 camundaIdentityService.setAuthentication(camundaAuthentication);
             }
         } catch (Exception e) {
-            LOGGER.error("Can NOT set user authentication -> Message: {}", e);
+            LOGGER.error("Can NOT set user authentication", e);
         }
 
         filterChain.doFilter(request, response);

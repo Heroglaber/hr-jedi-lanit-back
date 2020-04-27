@@ -13,17 +13,23 @@
  */
 package ru.lanit.bpm.jedu.hrjedi.rest;
 
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import ru.lanit.bpm.jedu.hrjedi.model.Employee;
 import ru.lanit.bpm.jedu.hrjedi.rest.form.SignUpForm;
-import ru.lanit.bpm.jedu.hrjedi.security.jwt.JwtProvider;
 import ru.lanit.bpm.jedu.hrjedi.service.EmployeeService;
 import ru.lanit.bpm.jedu.hrjedi.service.SecurityService;
 import ru.lanit.bpm.jedu.hrjedi.service.exception.EmployeeRegistrationException;
 
+import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 
 @RestController
@@ -77,5 +83,19 @@ public class EmployeeController {
     @PreAuthorize("hasRole('OMNI') or hasRole('ADMIN')")
     public List<Employee> getAll() {
         return employeeService.getAll();
+    }
+
+    @GetMapping("/current/avatar")
+    public ResponseEntity<byte[]> getAvatar(HttpServletRequest request) {
+        String login = securityService.getCurrentEmployee().getLogin();
+        Path avatarPath = Paths.get("target", "classes", "images", login + ".png");
+        try {
+            return ResponseEntity.ok()
+                .contentType(MediaType.parseMediaType(request.getServletContext().getMimeType(avatarPath.toAbsolutePath().toString())))
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + avatarPath.getFileName() + "\"")
+                .body(Files.readAllBytes(avatarPath));
+        } catch (IOException e) {
+            return ResponseEntity.ok().body(null);
+        }
     }
 }

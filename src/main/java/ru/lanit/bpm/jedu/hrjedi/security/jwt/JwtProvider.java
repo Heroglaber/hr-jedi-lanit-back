@@ -63,15 +63,15 @@ public class JwtProvider {
             Jwts.parser().setSigningKey(JWT_SIGN_SECRET).parseClaimsJws(authToken);
             return true;
         } catch (SignatureException e) {
-            LOGGER.error("Invalid JWT signature -> Message: {} ", e.getMessage(), e);
+            LOGGER.debug("Invalid JWT signature -> Message: {} ", e.getMessage());
         } catch (MalformedJwtException e) {
-            LOGGER.error("Invalid JWT token -> Message: {}", e.getMessage(), e);
+            LOGGER.debug("Invalid JWT token -> Message: {}", e.getMessage());
         } catch (ExpiredJwtException e) {
-            LOGGER.error("Expired JWT token -> Message: {}", e.getMessage(), e);
+            LOGGER.debug("Expired JWT token -> Message: {}", e.getMessage());
         } catch (UnsupportedJwtException e) {
-            LOGGER.error("Unsupported JWT token -> Message: {}", e.getMessage(), e);
+            LOGGER.debug("Unsupported JWT token -> Message: {}", e.getMessage());
         } catch (IllegalArgumentException e) {
-            LOGGER.error("JWT claims string is empty -> Message: {}", e.getMessage(), e);
+            LOGGER.debug("JWT claims string is empty -> Message: {}", e.getMessage());
         }
 
         return false;

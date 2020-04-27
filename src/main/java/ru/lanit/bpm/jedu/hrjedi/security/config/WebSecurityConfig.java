@@ -22,7 +22,6 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -68,8 +67,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.cors().and().csrf().disable().
-            authorizeRequests()
+        http.headers()
+            .frameOptions().disable().and()
+            .cors().and().csrf().disable()
+            .authorizeRequests()
             .antMatchers("/hr-rest/security/**").permitAll()
             .antMatchers("/rest/**").permitAll()
             .antMatchers("/api/**").permitAll()
@@ -82,9 +83,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
             .and()
             .exceptionHandling().authenticationEntryPoint(unauthorizedHandler).and()
             .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
-
-        // H2 uses iframes in console, so we need to enable it for the same origin
-        http.antMatcher("/h2-console/**").headers().frameOptions(HeadersConfigurer.FrameOptionsConfig::sameOrigin);
 
         http.addFilterBefore(authenticationJwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);
     }
