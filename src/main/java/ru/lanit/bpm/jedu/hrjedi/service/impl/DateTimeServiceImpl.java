@@ -16,6 +16,7 @@ package ru.lanit.bpm.jedu.hrjedi.service.impl;
 import org.springframework.stereotype.Service;
 import ru.lanit.bpm.jedu.hrjedi.service.DateTimeService;
 
+import java.time.LocalDate;
 import java.time.YearMonth;
 
 @Service
@@ -24,4 +25,10 @@ public class DateTimeServiceImpl implements DateTimeService {
     public YearMonth getCurrentMonth() {
         return YearMonth.now();
     }
+
+    @Override
+    public LocalDate getCurrentDate(){
+        return LocalDate.now();
+    }
+
 }

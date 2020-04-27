@@ -41,10 +41,10 @@ public class EmployeeServiceImpl implements EmployeeService {
     private RoleRepository roleRepository;
 
     public EmployeeServiceImpl(
-        EmployeeRepository employeeRepository,
-        @Value("${ru.lanit.bpm.jedu.hrjedi.headOfHrLogin}") String headOfHrLogin,
-        PasswordEncoder passwordEncoder,
-        RoleRepository roleRepository
+            EmployeeRepository employeeRepository,
+            @Value("${ru.lanit.bpm.jedu.hrjedi.headOfHrLogin}") String headOfHrLogin,
+            PasswordEncoder passwordEncoder,
+            RoleRepository roleRepository
     ) {
         this.employeeRepository = employeeRepository;
         this.headOfHrLogin = headOfHrLogin;
@@ -56,7 +56,7 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Override
     public Employee findByLogin(String login) {
         return employeeRepository.findByLoginIgnoreCase(login.trim())
-            .orElseThrow(() -> new UsernameNotFoundException("User Not Found with -> username: " + login));
+                .orElseThrow(() -> new UsernameNotFoundException("User Not Found with -> username: " + login));
     }
 
     @Transactional(readOnly = true)
@@ -75,13 +75,13 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Override
     public long getNumberOfAdmins() {
         return employeeRepository.findAll()
-            .stream()
-            .filter(user ->
-                user.getRoles()
-                    .stream()
-                    .anyMatch(role -> ROLE_ADMIN.equals(role.getName()))
-            )
-            .count();
+                .stream()
+                .filter(user ->
+                        user.getRoles()
+                                .stream()
+                                .anyMatch(role -> ROLE_ADMIN.equals(role.getName()))
+                )
+                .count();
     }
 
     @Transactional
@@ -104,6 +104,13 @@ public class EmployeeServiceImpl implements EmployeeService {
         return employeeRepository.save(employee);
     }
 
+    @Transactional(readOnly = true)
+    @Override
+    public String getEmployeeFullNameByLogin(String login) {
+        return findByLogin(login)
+                .getFullName();
+    }
+
     // ===================================================================================================================
     // = Implementation
     // ===================================================================================================================
@@ -124,11 +131,11 @@ public class EmployeeServiceImpl implements EmployeeService {
         Set<Role> registeredRoles = new HashSet<>();
 
         rolesStrings.forEach(roleString -> {
-                RoleName registeredRoleName = extractRoleNameFromRoleString(roleString);
-                Role registeredRole = roleRepository.findByName(registeredRoleName)
-                    .orElseThrow(() -> new EmployeeRegistrationException("Could not find provided role by role name in the database"));
-                registeredRoles.add(registeredRole);
-            }
+                    RoleName registeredRoleName = extractRoleNameFromRoleString(roleString);
+                    Role registeredRole = roleRepository.findByName(registeredRoleName)
+                            .orElseThrow(() -> new EmployeeRegistrationException("Could not find provided role by role name in the database"));
+                    registeredRoles.add(registeredRole);
+                }
         );
 
         return registeredRoles;

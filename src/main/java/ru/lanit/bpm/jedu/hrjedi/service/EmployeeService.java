@@ -23,6 +23,8 @@ public interface EmployeeService {
 
     Employee findWellKnownEmployeeHeadOfHr();
 
+    String getEmployeeFullNameByLogin(String login);
+
     List<Employee> getAll();
 
     long getNumberOfAdmins();

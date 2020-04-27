@@ -85,6 +85,12 @@ public class EmployeeController {
         return employeeService.getAll();
     }
 
+    @GetMapping("/{employeeLogin}/fullName")
+    @PreAuthorize("hasRole('OMNI') or hasRole('ADMIN') or hasRole('HR') or hasRole('USER')")
+    public String getEmployeeFullNameByLogin(@PathVariable("employeeLogin") String employeeLogin) {
+        return employeeService.getEmployeeFullNameByLogin(employeeLogin);
+    }
+
     @GetMapping("/current/avatar")
     public ResponseEntity<byte[]> getAvatar(HttpServletRequest request) {
         String login = securityService.getCurrentEmployee().getLogin();

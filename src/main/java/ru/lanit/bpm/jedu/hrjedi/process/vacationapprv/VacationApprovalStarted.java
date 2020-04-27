@@ -19,7 +19,10 @@ import org.camunda.bpm.engine.delegate.JavaDelegate;
 import org.springframework.stereotype.Component;
 import ru.lanit.bpm.jedu.hrjedi.model.Employee;
 import ru.lanit.bpm.jedu.hrjedi.model.Vacation;
+import ru.lanit.bpm.jedu.hrjedi.service.DateTimeService;
 import ru.lanit.bpm.jedu.hrjedi.service.EmployeeService;
+
+import java.time.LocalDate;
 
 /**
  * Vacation Approval process start handler
@@ -31,17 +34,19 @@ public class VacationApprovalStarted implements JavaDelegate {
 
     private EmployeeService employeeService;
 
-    public VacationApprovalStarted(IdentityService camundaIdentityService, EmployeeService employeeService) {
+    private DateTimeService dateTimeService;
+
+    public VacationApprovalStarted(IdentityService camundaIdentityService, EmployeeService employeeService, DateTimeService dateTimeService) {
         this.camundaIdentityService = camundaIdentityService;
         this.employeeService = employeeService;
+        this.dateTimeService = dateTimeService;
     }
 
     @Override
     public void execute(DelegateExecution process) {
         String initiatorLogin = getInitiatorLogin();
         Employee employee = employeeService.findByLogin(initiatorLogin);
-        Vacation vacation = new Vacation();
-        vacation.setEmployee(employee);
+        Vacation vacation = createDefaultVacationForEmployee(employee);
         Employee approver = employeeService.findWellKnownEmployeeHeadOfHr();
         String businessKey = getBusinessKey(process);
 
@@ -53,8 +58,23 @@ public class VacationApprovalStarted implements JavaDelegate {
         process.setVariable("vacation", vacation);
     }
 
+    // ===================================================================================================================
+    // = Implementation
+    // ===================================================================================================================
+
     private String getInitiatorLogin() {
         return camundaIdentityService.getCurrentAuthentication().getUserId();
+    }
+
+    private Vacation createDefaultVacationForEmployee(Employee employee) {
+        Vacation vacation = new Vacation();
+        vacation.setEmployee(employee);
+
+        LocalDate currentDate = dateTimeService.getCurrentDate();
+        vacation.setStart(currentDate.plusWeeks(2));
+        vacation.setEnd(currentDate.plusWeeks(2).plusDays(7));
+
+        return vacation;
     }
 
     private String getBusinessKey(DelegateExecution process) {

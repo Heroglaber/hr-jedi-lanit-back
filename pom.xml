@@ -13,9 +13,7 @@
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
 
-        <sonar.login/>
         <sonar.host.url>http://jedu-sonar.bpm.lanit/</sonar.host.url>
-        <sonar.projectKey>${project.groupId}:${project.artifactId}:${sonar.login}</sonar.projectKey>
         <sonar.scm.provider>git</sonar.scm.provider>
 
         <jjwt.version>0.9.0</jjwt.version>
@@ -35,6 +33,7 @@
         <groovy-maven-plugin.version>2.1</groovy-maven-plugin.version>
         <jacoco-maven-plugin.version>0.8.4</jacoco-maven-plugin.version>
         <sonar-maven-plugin.version>3.6.0.1398</sonar-maven-plugin.version>
+        <properties-maven-plugin.version>1.0.0</properties-maven-plugin.version>
         <groovy-all.version>3.0.3</groovy-all.version>
         <javax.mail.version>1.4.7</javax.mail.version>
     </properties>
@@ -216,6 +215,24 @@
             </properties>
             <build>
                 <plugins>
+                    <plugin>
+                        <groupId>org.codehaus.mojo</groupId>
+                        <artifactId>properties-maven-plugin</artifactId>
+                        <version>${properties-maven-plugin.version}</version>
+                        <executions>
+                            <execution>
+                                <phase>initialize</phase>
+                                <goals>
+                                    <goal>read-project-properties</goal>
+                                </goals>
+                                <configuration>
+                                    <files>
+                                        <file>${project.basedir}/build.properties</file>
+                                    </files>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
                     <plugin>
                         <groupId>org.codehaus.gmaven</groupId>
                         <artifactId>groovy-maven-plugin</artifactId>
