@@ -13,6 +13,7 @@
  */
 package ru.lanit.bpm.jedu.hrjedi.service;
 
+import java.time.LocalDate;
 import java.time.YearMonth;
 
 public interface DateTimeService {
@@ -22,4 +23,11 @@ public interface DateTimeService {
      * @return текущий месяц
      */
     YearMonth getCurrentMonth();
+
+    /**
+     * Возвращает текущий день. Необходим для тестирования, чтобы мокировать получение текущего дня.
+     *
+     * @return текущий день
+     */
+    LocalDate getCurrentDate();
 }

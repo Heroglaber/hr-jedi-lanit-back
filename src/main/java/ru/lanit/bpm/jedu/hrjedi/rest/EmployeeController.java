@@ -19,7 +19,6 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import ru.lanit.bpm.jedu.hrjedi.model.Employee;
 import ru.lanit.bpm.jedu.hrjedi.rest.form.SignUpForm;
-import ru.lanit.bpm.jedu.hrjedi.security.jwt.JwtProvider;
 import ru.lanit.bpm.jedu.hrjedi.service.EmployeeService;
 import ru.lanit.bpm.jedu.hrjedi.service.SecurityService;
 import ru.lanit.bpm.jedu.hrjedi.service.exception.EmployeeRegistrationException;
@@ -54,13 +53,13 @@ public class EmployeeController {
     public ResponseEntity<String> createEmployee(@RequestBody SignUpForm signUpRequest) {
         try {
             employeeService.createEmployee(
-                signUpRequest.getLogin(),
-                signUpRequest.getFirstName(),
-                signUpRequest.getSecondName(),
-                signUpRequest.getLastName(),
-                signUpRequest.getPassword(),
-                signUpRequest.getEmail(),
-                signUpRequest.getRoles());
+                    signUpRequest.getLogin(),
+                    signUpRequest.getFirstName(),
+                    signUpRequest.getSecondName(),
+                    signUpRequest.getLastName(),
+                    signUpRequest.getPassword(),
+                    signUpRequest.getEmail(),
+                    signUpRequest.getRoles());
         } catch (EmployeeRegistrationException ex) {
             return ResponseEntity.badRequest().body(ex.getMessage());
         }
@@ -77,5 +76,11 @@ public class EmployeeController {
     @PreAuthorize("hasRole('OMNI') or hasRole('ADMIN')")
     public List<Employee> getAll() {
         return employeeService.getAll();
+    }
+
+    @GetMapping("/{employeeLogin}/fullName")
+    @PreAuthorize("hasRole('OMNI') or hasRole('ADMIN') or hasRole('HR') or hasRole('USER')")
+    public String getEmployeeFullNameByLogin(@PathVariable("employeeLogin") String employeeLogin) {
+        return employeeService.getEmployeeFullNameByLogin(employeeLogin);
     }
 }
