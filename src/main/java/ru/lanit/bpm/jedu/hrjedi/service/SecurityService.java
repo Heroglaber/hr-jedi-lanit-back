@@ -23,4 +23,6 @@ public interface SecurityService {
     JwtResponse authenticateEmployee(String login, String password);
 
     Employee getCurrentEmployee();
+
+    String generateSecurePassword();
 }

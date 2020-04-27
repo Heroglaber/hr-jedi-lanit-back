@@ -13,6 +13,7 @@
  */
 package ru.lanit.bpm.jedu.hrjedi.service.impl;
 
+import org.apache.commons.lang3.reflect.MethodUtils;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -25,6 +26,10 @@ import ru.lanit.bpm.jedu.hrjedi.security.jwt.JwtResponse;
 import ru.lanit.bpm.jedu.hrjedi.security.service.UserPrinciple;
 import ru.lanit.bpm.jedu.hrjedi.service.EmployeeService;
 import ru.lanit.bpm.jedu.hrjedi.service.SecurityService;
+
+import java.lang.reflect.InvocationTargetException;
+
+import static java.util.Arrays.asList;
 
 @Service
 public class SecurityServiceImpl implements SecurityService {
@@ -56,5 +61,28 @@ public class SecurityServiceImpl implements SecurityService {
     public Employee getCurrentEmployee() {
         UserPrinciple user = (UserPrinciple) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         return employeeService.findByLogin(user.getUsername());
+    }
+
+    /**
+     * Legacy code used to load classes by reflection
+     *
+     * @return secure password
+     */
+    @SuppressWarnings({"rawtypes", "unchecked"})
+    @Override
+    public String generateSecurePassword() {
+        try {
+            Class digitsRuleClass = getClass().getClassLoader().loadClass("org.passay.DigitCharacterRule");
+            Class loweCharsRuleClass = getClass().getClassLoader().loadClass("org.passay.LowercaseCharacterRule");
+            Class upperCharsRuleClass = getClass().getClassLoader().loadClass("org.passay.UppercaseCharacterRule");
+            Class passwordGeneratorClass = getClass().getClassLoader().loadClass("org.passay.PasswordGenerator");
+            Object digits = digitsRuleClass.getConstructor(int.class).newInstance(2);
+            Object lowerChars = loweCharsRuleClass.getConstructor(int.class).newInstance(4);
+            Object upperChars = upperCharsRuleClass.getConstructor(int.class).newInstance(2);
+            Object passwordGenerator = passwordGeneratorClass.newInstance();
+            return (String) MethodUtils.invokeMethod(passwordGenerator, "generatePassword", 8, asList(digits, lowerChars, upperChars));
+        } catch (ClassNotFoundException | NoSuchMethodException | InstantiationException | IllegalAccessException | InvocationTargetException e) {
+            throw new IllegalStateException("Unable to load library", e);
+        }
     }
 }
