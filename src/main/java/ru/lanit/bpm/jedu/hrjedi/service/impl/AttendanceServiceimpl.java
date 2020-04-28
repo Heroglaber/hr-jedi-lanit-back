@@ -21,6 +21,7 @@ import ru.lanit.bpm.jedu.hrjedi.repository.AttendanceRepository;
 import ru.lanit.bpm.jedu.hrjedi.service.AttendanceService;
 import ru.lanit.bpm.jedu.hrjedi.service.DateTimeService;
 
+import java.time.Month;
 import java.time.YearMonth;
 import java.util.List;
 import java.util.Set;
@@ -63,12 +64,18 @@ public class AttendanceServiceimpl implements AttendanceService {
             return emptyList();
         }
 
-        int numberOfMonthForWhichAttendanceInfoRequired = year == currentYear ? currentMonth.getMonthValue() - 1  : NUMBER_OF_MONTH_IN_YEAR;
+        int numberOfMonthForWhichAttendanceInfoRequired = year == currentYear ? currentMonth.getMonthValue() - 1 : NUMBER_OF_MONTH_IN_YEAR;
         Set<Integer> monthsValuesWithAttendanceInfo = attendanceRepository.findMonthsValuesWithAttendanceInfoByYear(year);
 
         return IntStream.rangeClosed(1, numberOfMonthForWhichAttendanceInfoRequired)
-                .filter(requiredMonth -> !monthsValuesWithAttendanceInfo.contains(requiredMonth))
-                .mapToObj(requiredMonthWithoutInfo -> YearMonth.of(year, requiredMonthWithoutInfo))
-                .collect(Collectors.toList());
+            .filter(requiredMonth -> !monthsValuesWithAttendanceInfo.contains(requiredMonth))
+            .mapToObj(requiredMonthWithoutInfo -> YearMonth.of(year, requiredMonthWithoutInfo))
+            .collect(Collectors.toList());
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public List<Attendance> findAllByMonth(YearMonth yearMonth) {
+        return attendanceRepository.findAllByMonth(yearMonth.getYear(), yearMonth.getMonthValue());
     }
 }

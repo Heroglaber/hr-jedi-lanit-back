@@ -36,6 +36,7 @@
         <properties-maven-plugin.version>1.0.0</properties-maven-plugin.version>
         <groovy-all.version>3.0.3</groovy-all.version>
         <javax.mail.version>1.4.7</javax.mail.version>
+        <poi.version>4.1.2</poi.version>
     </properties>
 
     <dependencyManagement>
@@ -102,6 +103,16 @@
         <dependency>
             <groupId>com.h2database</groupId>
             <artifactId>h2</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.poi</groupId>
+            <artifactId>poi</artifactId>
+            <version>${poi.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.poi</groupId>
+            <artifactId>poi-ooxml</artifactId>
+            <version>${poi.version}</version>
         </dependency>
         <dependency>
             <groupId>org.codehaus.groovy</groupId>

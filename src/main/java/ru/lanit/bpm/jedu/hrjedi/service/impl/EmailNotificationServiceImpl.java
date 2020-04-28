@@ -59,7 +59,7 @@ public class EmailNotificationServiceImpl implements NotificationService {
     @Value("${ru.lanit.bpm.jedu.hrjedi.email.mailAddress}")
     private String applicationEmailAddress;
 
-    @Value("${hrjedi.commandLineArg.mailPassowrd}")
+    @Value("${hrjedi.commandLineArg.mailPassword}")
     private String applicationEmailPassword;
 
     @Value("${ru.lanit.bpm.jedu.hrjedi.email.smtp.host}")
@@ -87,7 +87,7 @@ public class EmailNotificationServiceImpl implements NotificationService {
             sendMultipartEmailMessage(applicationEmailAddress, recipientsEmails, subject, messageContent);
         } catch (MessagingException e) {
             throw new IllegalStateException(
-                    String.format("Error during sending vacation approval for employee - %s and vacation - %s", employee.getLogin(), approvedVacation.getId()), e);
+                String.format("Error during sending vacation approval for employee - %s and vacation - %s", employee.getLogin(), approvedVacation.getId()), e);
         }
         LOGGER.info("Notification of employee {} on vacation approval completed successfully", employee.getLogin());
     }
@@ -114,17 +114,17 @@ public class EmailNotificationServiceImpl implements NotificationService {
             imageBodyPart.setDataHandler(new DataHandler(new ByteArrayDataSource(imageData, MAIL_TYPE_PNG)));
             imageBodyPart.setHeader("Content-ID", String.format("<%s>", contentId));
             return imageBodyPart;
-        }catch (IOException e){
+        } catch (IOException e) {
             throw new IllegalStateException(String.format("Error occurred while trying to access the image located at %s", imageSource), e);
         }
     }
 
-    protected InputStream getImageSource(String imageSource){
+    protected InputStream getImageSource(String imageSource) {
         return getClass().getResourceAsStream(imageSource);
     }
 
     private void sendMultipartEmailMessage(String senderEmail, List<String> recipientsEmails, String subject, Collection<MimeBodyPart> messageParts)
-            throws MessagingException {
+        throws MessagingException {
         if ("off".equals(emailSendingMode)) {
             return;
         }
@@ -141,17 +141,17 @@ public class EmailNotificationServiceImpl implements NotificationService {
         mailProperties.put("mail.smtp.port", mailSmtpPort);
 
         return Session.getInstance(
-                mailProperties,
-                new javax.mail.Authenticator() {
-                    @Override
-                    protected PasswordAuthentication getPasswordAuthentication() {
-                        return new PasswordAuthentication(applicationEmailAddress, applicationEmailPassword);
-                    }
-                });
+            mailProperties,
+            new javax.mail.Authenticator() {
+                @Override
+                protected PasswordAuthentication getPasswordAuthentication() {
+                    return new PasswordAuthentication(applicationEmailAddress, applicationEmailPassword);
+                }
+            });
     }
 
     private Message createMessage(Session session, String senderEmail, Collection<String> recipientsEmails, String subject,
-            Collection<MimeBodyPart> messageParts) {
+        Collection<MimeBodyPart> messageParts) {
         try {
             Message message = new MimeMessage(session);
             Collection<String> finalRecipientsEmails = !"prod".equals(emailSendingMode) ? singletonList(applicationEmailAddress) : recipientsEmails;
@@ -168,12 +168,12 @@ public class EmailNotificationServiceImpl implements NotificationService {
 
     private InternetAddress[] createInternetAddresses(Collection<String> emailAddresses) {
         Set<String> uniqueEmails = emailAddresses.stream()
-                .map(emailAddress -> emailAddress.trim().toLowerCase())
-                .collect(Collectors.toSet());
+            .map(emailAddress -> emailAddress.trim().toLowerCase())
+            .collect(Collectors.toSet());
 
         return uniqueEmails.stream()
-                .map(this::createInternetAddress)
-                .toArray(InternetAddress[]::new);
+            .map(this::createInternetAddress)
+            .toArray(InternetAddress[]::new);
     }
 
     private InternetAddress createInternetAddress(String emailAddress) {
@@ -185,8 +185,8 @@ public class EmailNotificationServiceImpl implements NotificationService {
     }
 
     private Multipart createMultipartMessageContentFromParts(Collection<MimeBodyPart> messageParts) {
-        if(isEmpty(messageParts)){
-             throw new IllegalArgumentException("Email message must include at least one message part");
+        if (isEmpty(messageParts)) {
+            throw new IllegalArgumentException("Email message must include at least one message part");
         }
 
         Multipart messageContent = new MimeMultipart();

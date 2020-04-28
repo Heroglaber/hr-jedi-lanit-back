@@ -28,4 +28,6 @@ public interface AttendanceRepository extends JpaRepository<Attendance, Long> {
     @Query("select distinct month(a.entranceTime)  as monthValue from Attendance a where year(a.entranceTime)=:year")
     Set<Integer> findMonthsValuesWithAttendanceInfoByYear(@Param("year") int year);
 
+    @Query("select a from Attendance a where year(a.entranceTime) = :year and month(a.entranceTime) = :month")
+    List<Attendance> findAllByMonth(@Param("year") int year, @Param("month") int month);
 }

@@ -13,16 +13,10 @@
  */
 package ru.lanit.bpm.jedu.hrjedi.service;
 
-import ru.lanit.bpm.jedu.hrjedi.model.Attendance;
+import ru.lanit.bpm.jedu.hrjedi.rest.StreamedResult;
 
 import java.time.Month;
-import java.time.YearMonth;
-import java.util.List;
 
-public interface AttendanceService {
-    List<Attendance> findAllByEmployeeId(Long employeeId);
-
-    List<YearMonth> getMonthsWithoutAttendanceInfoByYear(int year);
-
-    List<Attendance> findAllByMonth(YearMonth year);
+public interface ExcelReportService {
+    StreamedResult createAttendanceReport(Month month, int year);
 }
