@@ -32,9 +32,11 @@ public class VacationApprovalApproveRequestComplete extends VacationApprovalComm
     @Override
     public void notify(DelegateTask task) {
         super.notify(task);
-        Vacation approvedVacation = getTaskVariable(task, "vacation");
 
-        vacationService.saveVacation(approvedVacation);
-        notificationService.notifyOnVacationApproval(approvedVacation);
+        if ("approve".equals(getTaskVariable(task, "action"))) {
+            Vacation approvedVacation = getTaskVariable(task, "vacation");
+            vacationService.saveVacation(approvedVacation);
+            notificationService.notifyOnVacationApproval(approvedVacation);
+        }
     }
 }

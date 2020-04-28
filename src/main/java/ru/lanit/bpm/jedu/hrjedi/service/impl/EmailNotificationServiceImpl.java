@@ -59,7 +59,7 @@ public class EmailNotificationServiceImpl implements NotificationService {
     @Value("${ru.lanit.bpm.jedu.hrjedi.email.mailAddress}")
     private String applicationEmailAddress;
 
-    @Value("${ru.lanit.bpm.jedu.hrjedi.email.mailPassowrd}")
+    @Value("${hrjedi.commandLineArg.mailPassowrd}")
     private String applicationEmailPassword;
 
     @Value("${ru.lanit.bpm.jedu.hrjedi.email.smtp.host}")

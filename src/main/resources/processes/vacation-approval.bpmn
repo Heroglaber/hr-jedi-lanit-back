@@ -11,7 +11,7 @@
     <bpmn2:userTask id="prepare-request" name="Заполнить заявку на отпуск" camunda:formKey="vacation-approval:prepare-request" camunda:assignee="${initiatorLogin}">
       <bpmn2:extensionElements>
         <camunda:taskListener delegateExpression="${vacationApprovalCommonTaskCreate}" event="create" />
-        <camunda:taskListener delegateExpression="${vacationApprovalCommonTaskComplete}" event="complete" />
+        <camunda:taskListener delegateExpression="${vacationApprovalPrepareRequestComplete}" event="complete" />
       </bpmn2:extensionElements>
       <bpmn2:incoming>SequenceFlow_1ircahn</bpmn2:incoming>
       <bpmn2:outgoing>SequenceFlow_0fqenv0</bpmn2:outgoing>
@@ -36,7 +36,7 @@
     <bpmn2:intermediateThrowEvent id="IntermediateThrowEvent_0ybspe9" name="На согласовании">
       <bpmn2:extensionElements>
         <camunda:executionListener event="start">
-          <camunda:script scriptFormat="groovy">execution.getProcessInstance().setVariable("status", "approval");</camunda:script>
+          <camunda:script scriptFormat="groovy">execution.getProcessInstance().setVariable("status", "На согласовании");</camunda:script>
         </camunda:executionListener>
       </bpmn2:extensionElements>
       <bpmn2:incoming>SequenceFlow_1x5270c</bpmn2:incoming>
@@ -46,7 +46,7 @@
     <bpmn2:intermediateThrowEvent id="IntermediateThrowEvent_0222ylo" name="Новая">
       <bpmn2:extensionElements>
         <camunda:executionListener event="start">
-          <camunda:script scriptFormat="groovy">execution.getProcessInstance().setVariable("status", "new");</camunda:script>
+          <camunda:script scriptFormat="groovy">execution.getProcessInstance().setVariable("status", "Новая");</camunda:script>
         </camunda:executionListener>
       </bpmn2:extensionElements>
       <bpmn2:incoming>SequenceFlow_0x2uekh</bpmn2:incoming>
@@ -56,7 +56,7 @@
     <bpmn2:intermediateThrowEvent id="IntermediateThrowEvent_1mdyabp" name="Согласована">
       <bpmn2:extensionElements>
         <camunda:executionListener event="start">
-          <camunda:script scriptFormat="groovy">execution.getProcessInstance().setVariable("status", "approved");</camunda:script>
+          <camunda:script scriptFormat="groovy">execution.getProcessInstance().setVariable("status", "Согласована");</camunda:script>
         </camunda:executionListener>
       </bpmn2:extensionElements>
       <bpmn2:incoming>SequenceFlow_130j72h</bpmn2:incoming>
@@ -65,7 +65,7 @@
     <bpmn2:intermediateThrowEvent id="IntermediateThrowEvent_1wmarn8" name="На уточнении">
       <bpmn2:extensionElements>
         <camunda:executionListener event="start">
-          <camunda:script scriptFormat="groovy">execution.getProcessInstance().setVariable("status", "correction");</camunda:script>
+          <camunda:script scriptFormat="groovy">execution.getProcessInstance().setVariable("status", "На уточнении");</camunda:script>
         </camunda:executionListener>
       </bpmn2:extensionElements>
       <bpmn2:incoming>SequenceFlow_07httwo</bpmn2:incoming>
