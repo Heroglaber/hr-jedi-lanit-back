@@ -21,7 +21,6 @@ import ru.lanit.bpm.jedu.hrjedi.repository.AttendanceRepository;
 import ru.lanit.bpm.jedu.hrjedi.service.AttendanceService;
 import ru.lanit.bpm.jedu.hrjedi.service.DateTimeService;
 
-import java.time.Month;
 import java.time.YearMonth;
 import java.util.List;
 import java.util.Set;
@@ -48,19 +47,19 @@ public class AttendanceServiceimpl implements AttendanceService {
         this.attendanceRepository = attendanceRepository;
     }
 
-    @Transactional(readOnly=true)
+    @Transactional(readOnly = true)
     @Override
     public List<Attendance> findAllByEmployeeId(Long employeeId) {
         return attendanceRepository.findAllByEmployeeId(employeeId);
     }
 
-    @Transactional(readOnly=true)
+    @Transactional(readOnly = true)
     @Override
     public List<YearMonth> getMonthsWithoutAttendanceInfoByYear(int year) {
         YearMonth currentMonth = dateTimeService.getCurrentMonth();
         int currentYear = currentMonth.getYear();
 
-        if(year > currentYear || YearMonth.of(year, JANUARY).equals(currentMonth)){
+        if (year > currentYear || YearMonth.of(year, JANUARY).equals(currentMonth)) {
             return emptyList();
         }
 

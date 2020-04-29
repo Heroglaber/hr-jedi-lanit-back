@@ -13,18 +13,11 @@
  */
 package ru.lanit.bpm.jedu.hrjedi.rest;
 
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-import ru.lanit.bpm.jedu.hrjedi.model.Employee;
 import ru.lanit.bpm.jedu.hrjedi.rest.form.LoginForm;
-import ru.lanit.bpm.jedu.hrjedi.rest.form.SignUpForm;
 import ru.lanit.bpm.jedu.hrjedi.security.jwt.JwtResponse;
 import ru.lanit.bpm.jedu.hrjedi.service.SecurityService;
-import ru.lanit.bpm.jedu.hrjedi.service.exception.EmployeeRegistrationException;
-
-import java.util.List;
 
 @CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
