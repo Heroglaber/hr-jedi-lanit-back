@@ -26,7 +26,7 @@ import org.springframework.jms.annotation.EnableJms;
 @EnableJpaRepositories(basePackages = "ru.lanit.bpm.jedu.hrjedi.repository")
 @EntityScan(basePackages = "ru.lanit.bpm.jedu.hrjedi.model")
 @EnableProcessApplication("hrJedi")
-//@EnableJms
+@EnableJms
 public class HrJediApplication {
     public static void main(String[] args) {
         SpringApplication.run(HrJediApplication.class, args);
