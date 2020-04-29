@@ -2,6 +2,7 @@ package ru.lanit.bpm.jedu.hrjedi.service.impl;
 
 import com.ibm.mq.spring.boot.MQAutoConfiguration;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -21,6 +22,7 @@ import java.time.temporal.ChronoUnit;
 
 import static org.hamcrest.Matchers.containsStringIgnoringCase;
 
+@Ignore
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = {MQAutoConfiguration.class, JmsAutoConfiguration.class})
 public class AccountingServiceIntegrationTest {
