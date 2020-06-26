@@ -10,7 +10,7 @@ CREATE TABLE EMPLOYEE
     id            NUMBER PRIMARY KEY,
     login         VARCHAR2(255) NOT NULL UNIQUE,
     first_name    VARCHAR2(255) NOT NULL,
-    second_name   VARCHAR2(255),
+    patronymic    VARCHAR2(255),
     last_name     VARCHAR2(255) NOT NULL,
     hash_password VARCHAR2(255) NOT NULL,
     email         VARCHAR(255)  NOT NULL UNIQUE,
@@ -66,7 +66,7 @@ INSERT INTO ROLE VALUES (next value for sq_role_id, 'ROLE_HR');
 -- ivanov:ivanov
 -- petrov:petrov
 -- sergeev:sergeev
-INSERT INTO EMPLOYEE (id, login, first_name, second_name, last_name, hash_password, email, state)
+INSERT INTO EMPLOYEE (id, login, first_name, patronymic, last_name, hash_password, email, state)
 VALUES (next value for sq_employee_id, 'admin', 'Admin', null, 'Admin', '$2a$04$l6jf/IelD8EcKEx0z5LJFur01DtdBcTLUxfiq79X1GF2hgJdmIeEW', 'admin@hrjedu.com', 'ACTIVE'),
        (next value for sq_employee_id, 'omni', 'Omni', null, 'Omni', '$2a$04$y1oDipZIlwPEGBPtTrXT4.9enhB4zuQoQKstVueSSmK9qqdY.yU6y', 'omni@hrjedu.com', 'ACTIVE'),
        (next value for sq_employee_id, 'user', 'User', null, 'User', '$2a$04$uUTMuVyvusd6gIkxLdrF5ufDQ0K359C0Pjq6yBtbctOo3y6mhpwiy', 'user@hrjedu.com', 'ACTIVE'),

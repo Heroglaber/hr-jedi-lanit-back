@@ -16,9 +16,6 @@ package ru.lanit.bpm.jedu.hrjedi.service;
 import ru.lanit.bpm.jedu.hrjedi.model.Employee;
 import ru.lanit.bpm.jedu.hrjedi.security.jwt.JwtResponse;
 
-import java.util.List;
-import java.util.Set;
-
 public interface SecurityService {
     JwtResponse authenticateEmployee(String login, String password);
 

@@ -50,7 +50,7 @@ public class EmployeeServiceImplTest {
 
     @Before
     public void setUp() {
-        employeeService = new EmployeeServiceImpl(employeeRepository, "HedOfHrLogin", passwordEncoder, roleRepository);
+        employeeService = new EmployeeServiceImpl(employeeRepository, "HeadOfHrLogin", passwordEncoder, roleRepository);
     }
 
     @Test

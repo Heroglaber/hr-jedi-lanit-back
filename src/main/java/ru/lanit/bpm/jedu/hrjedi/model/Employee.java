@@ -40,7 +40,7 @@ public class Employee implements Serializable {
     private String login;
 
     private String firstName;
-    private String secondName;
+    private String patronymic;
     private String lastName;
 
     private String hashPassword;
@@ -61,10 +61,10 @@ public class Employee implements Serializable {
     public Employee() {
     }
 
-    public Employee(String login, String firstName, String secondName, String lastName, String hashPassword, String email) {
+    public Employee(String login, String firstName, String patronymic, String lastName, String hashPassword, String email) {
         this.login = login;
         this.firstName = firstName;
-        this.secondName = secondName;
+        this.patronymic = patronymic;
         this.lastName = lastName;
         this.hashPassword = hashPassword;
         this.email = email;
@@ -126,12 +126,12 @@ public class Employee implements Serializable {
         this.firstName = firstName;
     }
 
-    public String getSecondName() {
-        return secondName;
+    public String getPatronymic() {
+        return patronymic;
     }
 
-    public void setSecondName(String secondName) {
-        this.secondName = secondName;
+    public void setPatronymic(String patronymic) {
+        this.patronymic = patronymic;
     }
 
     public String getLastName() {
@@ -143,6 +143,6 @@ public class Employee implements Serializable {
     }
     @JsonIgnore
     public String getFullName() {
-        return secondName == null ? String.format("%s %s", firstName, lastName) : String.format("%s %s %s", firstName, secondName, lastName);
+        return patronymic == null ? String.format("%s %s", firstName, lastName) : String.format("%s %s %s", firstName, patronymic, lastName);
     }
 }

@@ -86,13 +86,13 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Transactional
     @Override
-    public void createEmployee(String login, String firstName, String secondName, String lastName, String password, String email, Set<String> rolesStrings) {
+    public void createEmployee(String login, String firstName, String patronymic, String lastName, String password, String email, Set<String> rolesStrings) {
         String trimmedLoginInLowerCase = login.trim().toLowerCase();
 
         validateRegisteredLogin(trimmedLoginInLowerCase);
         validateRegisteredEmail(email);
 
-        Employee user = new Employee(trimmedLoginInLowerCase, firstName, secondName, lastName, passwordEncoder.encode(password), email);
+        Employee user = new Employee(trimmedLoginInLowerCase, firstName, patronymic, lastName, passwordEncoder.encode(password), email);
         user.setRoles(validateAndGetRegisteredRoles(rolesStrings));
         user.setState(State.ACTIVE);
         employeeRepository.save(user);
@@ -123,7 +123,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     private void validateRegisteredEmail(String email) {
         if (employeeRepository.existsByEmail(email)) {
-            throw new EmployeeRegistrationException("Employee with this login already exists!");
+            throw new EmployeeRegistrationException("Employee with this email already exists!");
         }
     }
 

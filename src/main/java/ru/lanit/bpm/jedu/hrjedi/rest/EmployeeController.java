@@ -62,7 +62,7 @@ public class EmployeeController {
             employeeService.createEmployee(
                 signUpRequest.getLogin(),
                 signUpRequest.getFirstName(),
-                signUpRequest.getSecondName(),
+                signUpRequest.getPatronymic(),
                 signUpRequest.getLastName(),
                 signUpRequest.getPassword(),
                 signUpRequest.getEmail(),

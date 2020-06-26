@@ -31,5 +31,5 @@ public interface EmployeeService {
 
     Employee save(Employee employee);
 
-    void createEmployee(String login, String firstName, String secondName, String lastName, String password, String email, Set<String> rolesStrings);
+    void createEmployee(String login, String firstName, String patronymic, String lastName, String password, String email, Set<String> rolesStrings);
 }

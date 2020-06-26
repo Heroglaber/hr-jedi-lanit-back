@@ -19,7 +19,7 @@ public class SignUpForm {
     private String login;
     private String email;
     private String firstName;
-    private String secondName;
+    private String patronymic;
     private String lastName;
     private Set<String> roles;
     private String password;
@@ -64,12 +64,12 @@ public class SignUpForm {
         this.firstName = firstName;
     }
 
-    public String getSecondName() {
-        return secondName;
+    public String getPatronymic() {
+        return patronymic;
     }
 
-    public void setSecondName(String secondName) {
-        this.secondName = secondName;
+    public void setPatronymic(String patronymic) {
+        this.patronymic = patronymic;
     }
 
     public String getLastName() {
