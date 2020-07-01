@@ -1,0 +1,49 @@
+# Spring
+server:
+  port: 8888
+spring:
+  datasource:
+    url: jdbc:h2:./target/local_db;DB_CLOSE_DELAY=-1;AUTO_SERVER=TRUE
+    username: sa
+    password:
+  h2.console.enabled: true
+  jms.template:
+    receive-timeout: 1000
+
+# Camunda
+camunda.bpm:
+  default-serialization-format: application/json
+  admin-user:
+    id: admin
+    password: admin
+    firstName: Administrator
+    lastName: Camunda
+  job-execution:
+    enabled: true
+  id-generator: simple
+
+# App Properties
+ru:
+  lanit:
+    bpm:
+      jedu:
+        hrjedi:
+          headOfHrLogin: hr
+          queues:
+            2t-cv-request: 2t-create-vacation-documents-request
+            2t-cv-response: 2t-create-vacation-documents-response
+          jwtExpiration: 3600
+          email:
+            #Mode in which application sends emails:
+            #off - messaging is turned off, dev - messages are sent from and to mailAddress, prod - messages are sent from mailAddress to actual recipients
+            mode: off
+            mailAddress: yourEmail@lanit.ru #Attention: DO NOT commit your email
+            smtp:
+              host: mail.lan.lanit.ru
+              port: 25
+
+# logging
+logging:
+  level:
+    ru.lanit: debug
+#    org.springframework: debug
