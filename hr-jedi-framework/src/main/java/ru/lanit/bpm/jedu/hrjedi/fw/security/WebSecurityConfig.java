@@ -75,6 +75,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
             .antMatchers("/hr-rest/security/**").permitAll()
             // camunda webapp
             .antMatchers("/app/**").permitAll()
+            .antMatchers("/lib/**").permitAll()
+            .antMatchers("/api/**").permitAll()
             // h2 console
             .antMatchers("/h2-console/**").permitAll()
             .anyRequest().authenticated()
