@@ -77,6 +77,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
             .antMatchers("/app/**").permitAll()
             .antMatchers("/lib/**").permitAll()
             .antMatchers("/api/**").permitAll()
+            .antMatchers("/camunda-welcome").permitAll()
             // h2 console
             .antMatchers("/h2-console/**").permitAll()
             .anyRequest().authenticated()
