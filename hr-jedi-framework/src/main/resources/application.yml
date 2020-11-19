@@ -22,6 +22,15 @@ camunda.bpm:
     enabled: true
   id-generator: simple
 
+# JMS Connection
+#ibm:
+#  mq:
+#    queueManager: todo
+#    channel: todo
+#    connName: todo
+#    user: todo
+#    password: todo
+
 # App Properties
 ru:
   lanit:
