@@ -24,7 +24,7 @@ import org.unitils.UnitilsBlockJUnit4ClassRunner;
 import org.unitils.easymock.EasyMockUnitils;
 import org.unitils.easymock.annotation.Mock;
 import ru.lanit.bpm.jedu.hrjedi.adapter.hibernate.attendance.AttendanceRepository;
-import ru.lanit.bpm.jedu.hrjedi.app.attendance.AttendanceServiceimpl;
+import ru.lanit.bpm.jedu.hrjedi.app.attendance.AttendanceServiceImpl;
 import ru.lanit.bpm.jedu.hrjedi.app.datetime.DateTimeService;
 
 import java.time.Month;
@@ -36,7 +36,7 @@ import java.util.List;
 @RunWith(UnitilsBlockJUnit4ClassRunner.class)
 public class AttendanceServiceImplTest {
     @TestSubject
-    AttendanceServiceimpl attendanceService = new AttendanceServiceimpl();
+    AttendanceServiceImpl attendanceService = new AttendanceServiceImpl();
 
     @Mock
     AttendanceRepository attendanceRepository;

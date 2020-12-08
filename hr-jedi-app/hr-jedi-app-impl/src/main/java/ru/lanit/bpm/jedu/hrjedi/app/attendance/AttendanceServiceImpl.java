@@ -30,7 +30,7 @@ import static java.time.Month.JANUARY;
 import static java.util.Collections.emptyList;
 
 @Service
-public class AttendanceServiceimpl implements AttendanceService {
+public class AttendanceServiceImpl implements AttendanceService {
     private static final int NUMBER_OF_MONTH_IN_YEAR = 12;
 
     private AttendanceRepository attendanceRepository;
