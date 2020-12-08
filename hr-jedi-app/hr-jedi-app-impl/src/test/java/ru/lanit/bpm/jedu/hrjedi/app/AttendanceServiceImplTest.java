@@ -34,7 +34,7 @@ import java.util.Collections;
 import java.util.List;
 
 @RunWith(UnitilsBlockJUnit4ClassRunner.class)
-public class AttendanceServiceimplTest {
+public class AttendanceServiceImplTest {
     @TestSubject
     AttendanceServiceimpl attendanceService = new AttendanceServiceimpl();
 
