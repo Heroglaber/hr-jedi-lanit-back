@@ -15,6 +15,10 @@ package ru.lanit.bpm.jedu.hrjedi.app.vacation;
 
 import ru.lanit.bpm.jedu.hrjedi.domain.Vacation;
 
+import java.util.Set;
+
 public interface VacationService {
+    Set<String> findVacationsToApprove(String approverLogin);
+
     void saveVacation(Vacation vacation);
 }

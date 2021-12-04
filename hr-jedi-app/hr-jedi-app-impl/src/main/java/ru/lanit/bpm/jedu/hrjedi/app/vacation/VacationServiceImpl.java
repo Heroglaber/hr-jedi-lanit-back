@@ -17,6 +17,9 @@ import org.springframework.stereotype.Service;
 import ru.lanit.bpm.jedu.hrjedi.adapter.hibernate.vacation.VacationRepository;
 import ru.lanit.bpm.jedu.hrjedi.domain.Vacation;
 
+import java.util.Collections;
+import java.util.Set;
+
 @Service
 public class VacationServiceImpl implements VacationService {
     private VacationRepository vacationRepository;
@@ -28,5 +31,10 @@ public class VacationServiceImpl implements VacationService {
     @Override
     public void saveVacation(Vacation vacation) {
         vacationRepository.save(vacation);
+    }
+
+    @Override
+    public Set<String> findVacationsToApprove(String approverLogin) {
+        return Collections.emptySet();
     }
 }

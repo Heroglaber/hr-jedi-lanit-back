@@ -29,11 +29,8 @@ import java.time.LocalDate;
  */
 @Component("vacationApprovalStarted")
 public class VacationApprovalStarted implements JavaDelegate {
-
     private IdentityService camundaIdentityService;
-
     private EmployeeService employeeService;
-
     private DateTimeService dateTimeService;
 
     public VacationApprovalStarted(IdentityService camundaIdentityService, EmployeeService employeeService, DateTimeService dateTimeService) {
