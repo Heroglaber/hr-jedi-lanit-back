@@ -25,6 +25,7 @@
         <groovy-all.version>3.0.3</groovy-all.version>
         <javax.mail.version>1.4.7</javax.mail.version>
         <poi.version>4.1.2</poi.version>
+        <passay.version>1.0</passay.version>
 
         <sonar.host.url>http://jedu-sonar.bpm.lanit/</sonar.host.url>
         <sonar.scm.provider>git</sonar.scm.provider>
@@ -57,6 +58,11 @@
     </dependencyManagement>
 
     <dependencies>
+        <dependency>
+            <groupId>org.passay</groupId>
+            <artifactId>passay</artifactId>
+            <version>${passay.version}</version>
+        </dependency>
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
