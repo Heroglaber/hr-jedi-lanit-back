@@ -81,8 +81,8 @@ VALUES (1, 1), (2, 2), (3, 3), (4, 4), (5, 3), (6, 3), (7, 3);
 INSERT INTO OFFICE
 VALUES (next value for sq_office_id, 'Москва'),
        (next value for sq_office_id, 'Нижний Новгород'),
-       (next value for sq_office_id, 'Уфа'),
-       (next value for sq_office_id, 'Севастополь');
+       (next value for sq_office_id, 'Диптаун'),
+       (next value for sq_office_id, 'Уфа');
 
 INSERT INTO ATTENDANCE
 VALUES  (next value for sq_attendance_id, 3, 1, PARSEDATETIME('10-01-2020 09:04:24','dd-MM-yyyy hh:mm:ss'), PARSEDATETIME('10-01-2020 18:20:01','dd-MM-yyyy hh:mm:ss')),
