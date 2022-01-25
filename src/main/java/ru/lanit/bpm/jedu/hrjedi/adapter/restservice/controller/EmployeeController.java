@@ -46,6 +46,8 @@ public class EmployeeController {
     public ResponseEntity<String> updateEmail(@RequestAttribute String currentUser, @RequestBody String email) {
         if (StringUtils.isEmpty(email)) {
             return ResponseEntity.badRequest().body("Email is empty");
+        } else if (!email.matches("^[a-zA-Z0-9А-яЁё.-]+@[a-zA-Z0-9А-яЁё.-]+$")){
+            return ResponseEntity.badRequest().body("Incorrect email format");
         } else {
             Employee employee = employeeService.findByLogin(currentUser);
             employee.setEmail(email);
