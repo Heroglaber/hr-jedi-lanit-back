@@ -13,20 +13,31 @@
  */
 package ru.lanit.bpm.jedu.hrjedi.app.impl.vacation;
 
+import org.camunda.bpm.engine.RepositoryService;
+import org.camunda.bpm.engine.RuntimeService;
+import org.camunda.bpm.engine.repository.ProcessDefinition;
+import org.camunda.bpm.engine.runtime.ProcessInstance;
 import org.springframework.stereotype.Service;
 import ru.lanit.bpm.jedu.hrjedi.adapter.hibernate.vacation.VacationRepository;
 import ru.lanit.bpm.jedu.hrjedi.app.api.vacation.VacationService;
 import ru.lanit.bpm.jedu.hrjedi.domain.Vacation;
 
-import java.util.Collections;
+import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 public class VacationServiceImpl implements VacationService {
-    private VacationRepository vacationRepository;
+    private static final String VACATION_PROCESS_DEFINITION_KEY = "vacation-approval";
 
-    public VacationServiceImpl(VacationRepository vacationRepository) {
+    private VacationRepository vacationRepository;
+    private RuntimeService runtimeService;
+    private RepositoryService repositoryService;
+
+    public VacationServiceImpl(VacationRepository vacationRepository, RuntimeService runtimeService, RepositoryService repositoryService) {
         this.vacationRepository = vacationRepository;
+        this.runtimeService = runtimeService;
+        this.repositoryService = repositoryService;
     }
 
     @Override
@@ -36,6 +47,18 @@ public class VacationServiceImpl implements VacationService {
 
     @Override
     public Set<String> findVacationsToApprove(String approverLogin) {
-        return Collections.emptySet();
+        ProcessDefinition vacationProcessDefinition =
+            repositoryService.createProcessDefinitionQuery()
+                .processDefinitionKey(VACATION_PROCESS_DEFINITION_KEY)
+                .latestVersion()
+                .singleResult();
+
+        List<ProcessInstance> processInstances =
+            runtimeService.createProcessInstanceQuery()
+                .processDefinitionId(vacationProcessDefinition.getId())
+                .variableValueEquals("approverLogin", approverLogin)
+                .active()
+                .list();
+        return processInstances.stream().map(ProcessInstance::getId).collect(Collectors.toSet());
     }
 }
