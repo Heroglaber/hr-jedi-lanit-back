@@ -1,7 +1,129 @@
 <!DOCTYPE html>
 <html>
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style type="text/css">
+        table {
+            border-collapse: collapse;
+            border-spacing: 0;
+        }
+        td {
+            margin: 0;
+            padding: 0;
+        }
+        .main-table {
+            width: 630px;
+            height: 264px;
+            background-color: #FFE22E;
+            border: solid;
+            border-color: #FFE22E;
+            border-width: 6px;
+        }
+        .inner-table {
+            padding-top: 20px;
+            height: 184px;
+            background-color: white;
+        }
+        .header {
+            margin: 0;
+            padding: 0;
+            font-size: 0;
+            position: relative;
+        }
+        .header * {
+            height: 80px;
+            margin: 0;
+            padding: 0;
+        }
+        .email-message * {
+            margin: 0;
+            padding: 0;
+        }
+        .email-text {
+            padding-top: 8px;
+            padding-left: 8px;
+            font-size: 20px;
+            font-family: Arial;
+            color: #455A64;
+            line-height: 1.2;
+            white-space: normal;
+        }
+        .footer {
+            height: 35px;
+            width: 100%;
+            margin: 0;
+            padding: 0;
+            font-size: 10px;
+            font-family: Arial;
+            color: #999999;
+            line-height: 1.2;
+        }
+        #logo-td {
+            width: 80px;
+        }
+        #logo-img {
+            height: 80px;
+            width: 80px;
+        }
+        #logo-header {
+            font-size: 49px;
+            font-family: Arial;
+            color: #455A64;
+            text-align: left;
+            text-decoration:none;
+            vertical-align:middle;
+            line-height: 1.2;
+            display:table-cell;
+        }
+        #footer-text {
+            width: 100%;
+            text-align: center;
+            margin:0;
+            padding:0;
+        }
+    </style>
+</head>
 <body>
-    %1s %2s %3s
+<table class="main-table">
+    <tr class="header">
+        <td id="logo-td">
+            <img src="cid:hrjedilogo" id="logo-img">
+        </td>
+        <td>
+            <p id="logo-header">HR Jedi</p>
+        </td>
+    </tr>
+    <tr>
+        <td colspan="100%">
+            <table class="inner-table">
+                <tr class="email-message">
+                    <td>
+                        <p class="email-text">Привет, %1s!</p>
+                    </td>
+                </tr>
+                <tr class="email-message">
+                    <td>
+                        <p class="email-text">Твоя заявка на отпуск <b>%2s - %3s</b> была согласована. Дополнительную информацию по отпускам можно найти <a href="http://www.consultant.ru/document/cons_doc_LAW_34683/ec9a8272d8fc72bae7a1c8fff8924d87de7daf2f/">тут</a>.</p>
+                    </td>
+                </tr>
+                <tr class="email-message">
+                    <td>
+                        <p class="email-text">Приятного отдыха!</p>
+                    </td>
+                </tr>
+                <tr class="footer">
+                    <td>
+                        <div style="height: 23px;"></div>
+                        <div>
+                            <p id="footer-text">Данное письмо сформировано автоматически и не требует ответа</p>
+                        </div>
+                    </td>
+                </tr>
+            </table>
+        </td>
+    </tr>
+</table> <!---End-Main-Table-->
 </body>
 </html>
-
