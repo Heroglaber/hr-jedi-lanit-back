@@ -19,6 +19,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import ru.lanit.bpm.jedu.hrjedi.adapter.restservice.dto.SignUpFormDto;
 import ru.lanit.bpm.jedu.hrjedi.app.api.employee.EmployeeRegistrationException;
 import ru.lanit.bpm.jedu.hrjedi.app.api.employee.EmployeeService;
@@ -102,6 +103,17 @@ public class EmployeeController {
                 .body(Files.readAllBytes(avatarPath));
         } catch (IOException e) {
             return ResponseEntity.ok().body(null);
+        }
+    }
+
+    @PostMapping(value = "/current/avatar", produces = {MediaType.IMAGE_PNG_VALUE, "application/json"})
+    public ResponseEntity<String> uploadAvatar(@RequestAttribute String currentUser, @RequestParam("imageFile") MultipartFile file) {
+        Path avatarPath = Paths.get("target", "classes", "images", currentUser + ".png");
+        try {
+            Files.write(avatarPath, file.getBytes());
+            return ResponseEntity.ok("Avatar uploaded successfully.");
+        } catch (IOException  ex) {
+            return ResponseEntity.badRequest().body("Avatar is not uploaded");
         }
     }
 
