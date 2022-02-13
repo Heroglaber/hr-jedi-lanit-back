@@ -2,13 +2,14 @@ package ru.lanit.bpm.jedu.hrjedi.adapter.accounting;
 
 import com.ibm.mq.spring.boot.MQAutoConfiguration;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.jms.JmsAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.context.junit4.SpringRunner;
 import ru.lanit.bpm.jedu.hrjedi.domain.Employee;
 import ru.lanit.bpm.jedu.hrjedi.domain.Vacation;
@@ -18,9 +19,12 @@ import java.time.temporal.ChronoUnit;
 
 import static org.hamcrest.Matchers.containsStringIgnoringCase;
 
-@Ignore
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes = {MQAutoConfiguration.class, JmsAutoConfiguration.class})
+@SpringBootTest(classes = {MQAutoConfiguration.class, JmsAutoConfiguration.class, AccountingController.class})
+@TestPropertySource(properties = {
+    "ru.lanit.bpm.jedu.hrjedi.queues.2t-cv-request=ABUDANIN.IN",
+    "ru.lanit.bpm.jedu.hrjedi.queues.2t-cv-response=ABUDANIN.OUT",
+})
 public class AccountingControllerIntegrationTest {
     private static final Employee EMPLOYEE_IVANOV = new Employee("ivanov", "", "", "", "", "");
     private static final Employee EMPLOYEE_PETROV = new Employee("petrov", "", "", "", "", "");
@@ -32,14 +36,15 @@ public class AccountingControllerIntegrationTest {
     @Rule
     public ExpectedException expectedException = ExpectedException.none();
 
+    @Autowired
     private AccountingController accountingController;
 
     @Before
     public void setUp() {
-        accountingController = new AccountingController();
+        //accountingController = new AccountingController();
     }
 
-    @Test
+    @Test(expected = Test.None.class)
     public void success() throws Exception {
         Vacation vacation = new Vacation(EMPLOYEE_IVANOV, DATE_START, DATE_END);
 
