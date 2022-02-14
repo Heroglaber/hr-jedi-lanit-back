@@ -13,6 +13,7 @@
  */
 package ru.lanit.bpm.jedu.hrjedi.app.api.employee;
 
+import ru.lanit.bpm.jedu.hrjedi.adapter.restservice.dto.EmployeeDto;
 import ru.lanit.bpm.jedu.hrjedi.domain.Employee;
 
 import java.util.List;
@@ -32,6 +33,8 @@ public interface EmployeeService {
     Employee save(Employee employee);
 
     void createEmployee(String login, String firstName, String patronymic, String lastName, String password, String email, Set<String> rolesStrings);
+
+    public void createEmployees(List<EmployeeDto> employeeDtoList);
 
     String generateSecurePassword();
 }

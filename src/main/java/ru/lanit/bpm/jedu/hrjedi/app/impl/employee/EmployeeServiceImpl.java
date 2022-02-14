@@ -20,6 +20,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.lanit.bpm.jedu.hrjedi.adapter.hibernate.employee.EmployeeRepository;
 import ru.lanit.bpm.jedu.hrjedi.adapter.hibernate.employee.RoleRepository;
+import ru.lanit.bpm.jedu.hrjedi.adapter.restservice.dto.EmployeeDto;
 import ru.lanit.bpm.jedu.hrjedi.app.api.employee.EmployeeRegistrationException;
 import ru.lanit.bpm.jedu.hrjedi.app.api.employee.EmployeeService;
 import ru.lanit.bpm.jedu.hrjedi.domain.Employee;
@@ -96,6 +97,27 @@ public class EmployeeServiceImpl implements EmployeeService {
         user.setRoles(validateAndGetRegisteredRoles(rolesStrings));
         user.setState(State.ACTIVE);
         employeeRepository.save(user);
+    }
+
+    @Transactional
+    @Override
+    public void createEmployees(List<EmployeeDto> employeeDtoList) {
+        for(EmployeeDto employeeDto: employeeDtoList) {
+            String trimmedLoginInLowerCase = employeeDto.getLogin().trim().toLowerCase();
+
+            validateRegisteredLogin(trimmedLoginInLowerCase);
+            validateRegisteredEmail(employeeDto.getEmail());
+
+            Employee user = new Employee(trimmedLoginInLowerCase
+                , employeeDto.getFirstName()
+                , employeeDto.getPatronymic()
+                , employeeDto.getLastName()
+                , passwordEncoder.encode(generateSecurePassword())
+                , employeeDto.getEmail());
+            user.setRoles(validateAndGetRegisteredRoles(employeeDto.getRoles()));
+            user.setState(State.ACTIVE);
+            employeeRepository.save(user);
+        }
     }
 
     @Transactional

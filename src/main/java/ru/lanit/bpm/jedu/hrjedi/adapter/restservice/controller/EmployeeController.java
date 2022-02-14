@@ -13,6 +13,15 @@
  */
 package ru.lanit.bpm.jedu.hrjedi.adapter.restservice.controller;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import org.everit.json.schema.Schema;
+import org.everit.json.schema.ValidationException;
+import org.everit.json.schema.loader.SchemaLoader;
+import org.json.JSONObject;
+import org.json.JSONTokener;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -20,17 +29,23 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import ru.lanit.bpm.jedu.hrjedi.adapter.restservice.dto.EmployeeDto;
 import ru.lanit.bpm.jedu.hrjedi.adapter.restservice.dto.SignUpFormDto;
 import ru.lanit.bpm.jedu.hrjedi.app.api.employee.EmployeeRegistrationException;
 import ru.lanit.bpm.jedu.hrjedi.app.api.employee.EmployeeService;
 import ru.lanit.bpm.jedu.hrjedi.domain.Employee;
 
 import javax.servlet.ServletContext;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @RestController
 @RequestMapping("/hr-rest/employees")
@@ -74,6 +89,28 @@ public class EmployeeController {
         }
 
         return ResponseEntity.ok("Employee registered successfully!");
+    }
+
+    @PostMapping(value="/upload", consumes = { MediaType.MULTIPART_FORM_DATA_VALUE})
+    @PreAuthorize("hasRole('OMNI') or hasRole('ADMIN')")
+    public ResponseEntity<String> uploadEmployees(@RequestPart("userFile") MultipartFile document) {
+        List<EmployeeDto> employeeDtoList;
+        try {
+            employeeDtoList = mapJsonToEmployeeDtos(document);
+        } catch (IOException e) {
+            return ResponseEntity.badRequest().body("Error while parsing json file.");
+        } catch (ValidationException e) {
+            return ResponseEntity.badRequest().body("Json validation exception.");
+        }
+        if(checkDuplicateEmployeesDto(employeeDtoList)) {
+            return ResponseEntity.badRequest().body("Json contains login duplicates.");
+        }
+        try {
+            employeeService.createEmployees(employeeDtoList);
+        } catch (EmployeeRegistrationException ex) {
+            return ResponseEntity.badRequest().body(ex.getMessage());
+        }
+        return ResponseEntity.ok("Employees uploaded successfully.");
     }
 
     @GetMapping("/{login}")
@@ -120,5 +157,32 @@ public class EmployeeController {
     @GetMapping("/generate-pass")
     public String generateSecurePassword() {
         return employeeService.generateSecurePassword();
+    }
+
+    private static List<EmployeeDto> mapJsonToEmployeeDtos(MultipartFile document) throws IOException {
+        String json = new String(document.getBytes(), StandardCharsets.UTF_8);
+        validateJson(json);
+        ObjectMapper objectMapper = new ObjectMapper();
+        ObjectNode root = (ObjectNode) objectMapper.readTree(json);
+        ArrayNode array = (ArrayNode) root.get("users");
+        return objectMapper.readValue(array.toString(), new TypeReference<List<EmployeeDto>>() {});
+    }
+
+    private static boolean checkDuplicateEmployeesDto(List<EmployeeDto> inputList){
+        Set inputSet = new HashSet(inputList);
+        return inputSet.size() < inputList.size();
+    }
+
+    private static void validateJson(String json) throws IOException {
+        final String schemaName = "employeeSchema.json";
+
+        Path schemaPath = Paths.get("target", "classes", "documents", schemaName);
+        InputStream schemaStream = Files.newInputStream(schemaPath);
+        JSONObject jsonSchema = new JSONObject(new JSONTokener(schemaStream));
+        JSONObject jsonSubject = new JSONObject(
+            new JSONTokener(new ByteArrayInputStream(json.getBytes())));
+
+        Schema schema = SchemaLoader.load(jsonSchema);
+        schema.validate(jsonSubject);
     }
 }

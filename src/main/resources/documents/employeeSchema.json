@@ -1,0 +1,59 @@
+{
+	"$schema": "http://json-schema.org/draft-04/schema#",
+	"additionalProperties": false,
+	"type": "object",
+	"properties": {
+		"users": {
+			"type": "array",
+			"items": {
+				"type": "object",
+				"properties": {
+					"username": {
+						"type": "string",
+						"minLength": 1
+					},
+					"first-name": {
+						"type": "string",
+						"minLength": 1
+					},
+					"second-name": {
+						"type": "string",
+						"minLength": 1
+					},
+					"last-name": {
+						"type": "string",
+						"minLength": 1
+					},
+					"roles": {
+						"type": "array",
+						"minContains": 1,
+						"uniqueItems": true,
+						"items": {
+							"type": "string",
+							"enum": [
+								"USER",
+								"ADMIN",
+								"OMNI",
+								"HR"
+							]
+						}
+					},
+					"email": {
+						"type": "string",
+						"format": "email"
+					}
+				},
+				"required": [
+					"username",
+					"first-name",
+					"last-name",
+					"roles",
+					"email"
+				]
+			}
+		}
+	},
+	"required": [
+		"users"
+	]
+}
