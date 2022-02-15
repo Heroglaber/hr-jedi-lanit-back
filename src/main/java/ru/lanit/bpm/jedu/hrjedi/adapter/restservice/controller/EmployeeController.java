@@ -36,6 +36,7 @@ import ru.lanit.bpm.jedu.hrjedi.app.api.employee.EmployeeService;
 import ru.lanit.bpm.jedu.hrjedi.domain.Employee;
 
 import javax.servlet.ServletContext;
+import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -147,6 +148,12 @@ public class EmployeeController {
     public ResponseEntity<String> uploadAvatar(@RequestAttribute String currentUser, @RequestParam("imageFile") MultipartFile file) {
         Path avatarPath = Paths.get("target", "classes", "images", currentUser + ".png");
         try {
+            if(file == null || file.isEmpty()) {
+                return ResponseEntity.badRequest().body("Avatar file is empty");
+            }
+            if (avatarPath.toFile().exists() && filesIdentical(avatarPath, file)) {
+                return ResponseEntity.badRequest().body("Avatar file is already uploaded");
+            }
             Files.write(avatarPath, file.getBytes());
             return ResponseEntity.ok("Avatar uploaded successfully.");
         } catch (IOException  ex) {
@@ -184,5 +191,26 @@ public class EmployeeController {
 
         Schema schema = SchemaLoader.load(jsonSchema);
         schema.validate(jsonSubject);
+    }
+
+    private static boolean filesIdentical(Path existingFilePath, MultipartFile newFile) throws IOException {
+        try (BufferedInputStream fis1 = new BufferedInputStream(Files.newInputStream(existingFilePath));
+             BufferedInputStream fis2 = new BufferedInputStream(newFile.getInputStream())) {
+
+            int ch = 0;
+            long pos = 1;
+            while ((ch = fis1.read()) != -1) {
+                if (ch != fis2.read()) {
+                    return false;
+                }
+                pos++;
+            }
+            if (fis2.read() == -1) {
+                return true;
+            }
+            else {
+                return false;
+            }
+        }
     }
 }
