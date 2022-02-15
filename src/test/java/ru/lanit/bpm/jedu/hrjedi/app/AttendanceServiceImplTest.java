@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2008-CURRENT_YEAR
+ * Copyright (c) 2008-2020
  * LANIT
  * All rights reserved.
  *
@@ -31,7 +31,6 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import static java.time.Month.*;
-import static java.time.YearMonth.of;
 import static java.util.Arrays.stream;
 import static java.util.Collections.emptyList;
 import static org.apache.commons.collections4.SetUtils.hashSet;
@@ -43,9 +42,9 @@ import static org.unitils.easymock.EasyMockUnitils.replay;
 public class AttendanceServiceImplTest {
     private static final int CURRENT_YEAR = 2020;
     private static final int NEXT_YEAR = 2021;
-    private static final YearMonth CURRENT_NOVEMBER = of(CURRENT_YEAR, NOVEMBER);
-    private static final YearMonth CURRENT_JANUARY = of(CURRENT_YEAR, JANUARY);
-    private static final YearMonth NEXT_JANUARY = of(NEXT_YEAR, JANUARY);
+    private static final YearMonth CURRENT_NOVEMBER = YearMonth.of(CURRENT_YEAR, NOVEMBER);
+    private static final YearMonth CURRENT_JANUARY = YearMonth.of(CURRENT_YEAR, JANUARY);
+    private static final YearMonth NEXT_JANUARY = YearMonth.of(NEXT_YEAR, JANUARY);
 
     @TestSubject
     AttendanceServiceImpl attendanceService = new AttendanceServiceImpl();
@@ -65,11 +64,7 @@ public class AttendanceServiceImplTest {
     public void getMonthsWithoutAttendanceInfoByYear_currentYear() {
         final Set<Integer> EXPECTED_MONTHS = getSetOfMonthNumbers(1, 3, 5, 7, 8, 9);
 
-        expect(dateTimeService.getCurrentMonth()).andReturn(CURRENT_NOVEMBER);
-        expect(attendanceRepository.findMonthsValuesWithAttendanceInfoByYear(CURRENT_YEAR)).andReturn(EXPECTED_MONTHS);
-        replay();
-
-        List<YearMonth> monthsWithoutAttendanceInfo = attendanceService.getMonthsWithoutAttendanceInfoByYear(CURRENT_YEAR);
+        List<YearMonth> monthsWithoutAttendanceInfo = monthsWithoutAttendanceInfo(CURRENT_YEAR, CURRENT_NOVEMBER, EXPECTED_MONTHS);
 
         assertEquals(getYearMonths(CURRENT_YEAR, FEBRUARY, APRIL, JUNE, OCTOBER), monthsWithoutAttendanceInfo);
     }
@@ -78,31 +73,21 @@ public class AttendanceServiceImplTest {
     public void getMonthsWithoutAttendanceInfoByYear_currentYear_allRequiredMonthWithAttendanceInfo() {
         final Set<Integer> EXPECTED_MONTHS = getSetOfMonthNumbers(1, 2, 3, 4, 5, 6, 7, 8, 9, 10);
 
-        expect(dateTimeService.getCurrentMonth()).andReturn(CURRENT_NOVEMBER);
-        expect(attendanceRepository.findMonthsValuesWithAttendanceInfoByYear(CURRENT_YEAR)).andReturn(EXPECTED_MONTHS);
-        replay();
-
-        List<YearMonth> monthsWithoutAttendanceInfo = attendanceService.getMonthsWithoutAttendanceInfoByYear(CURRENT_YEAR);
+        List<YearMonth> monthsWithoutAttendanceInfo = monthsWithoutAttendanceInfo(CURRENT_YEAR, CURRENT_NOVEMBER, EXPECTED_MONTHS);
 
         assertEquals(emptyList(), monthsWithoutAttendanceInfo);
     }
 
     @Test
     public void getMonthsWithoutAttendanceInfoByYear_futureYear() {
-        expect(dateTimeService.getCurrentMonth()).andReturn(CURRENT_NOVEMBER);
-        replay();
-
-        List<YearMonth> monthsWithoutAttendanceInfo = attendanceService.getMonthsWithoutAttendanceInfoByYear(NEXT_YEAR);
+        List<YearMonth> monthsWithoutAttendanceInfo = monthsWithoutAttendanceInfoByYear(NEXT_YEAR, CURRENT_NOVEMBER);
 
         assertEquals(emptyList(), monthsWithoutAttendanceInfo);
     }
 
     @Test
     public void getMonthsWithoutAttendanceInfoByYear_futureCurrentJanuary() {
-        expect(dateTimeService.getCurrentMonth()).andReturn(CURRENT_JANUARY);
-        replay();
-
-        List<YearMonth> monthsWithoutAttendanceInfo = attendanceService.getMonthsWithoutAttendanceInfoByYear(CURRENT_YEAR);
+        List<YearMonth> monthsWithoutAttendanceInfo = monthsWithoutAttendanceInfoByYear(CURRENT_YEAR, CURRENT_JANUARY);
 
         assertEquals(emptyList(), monthsWithoutAttendanceInfo);
     }
@@ -111,17 +96,28 @@ public class AttendanceServiceImplTest {
     public void getMonthsWithoutAttendanceInfoByYear_forPastYear() {
         final Set<Integer> EXPECTED_MONTHS = getSetOfMonthNumbers(1, 3, 5, 7, 8, 9, 11);
 
-        expect(dateTimeService.getCurrentMonth()).andReturn(NEXT_JANUARY);
-        expect(attendanceRepository.findMonthsValuesWithAttendanceInfoByYear(CURRENT_YEAR)).andReturn(EXPECTED_MONTHS);
-        replay();
-
-        List<YearMonth> monthsWithoutAttendanceInfo = attendanceService.getMonthsWithoutAttendanceInfoByYear(CURRENT_YEAR);
+        List<YearMonth> monthsWithoutAttendanceInfo = monthsWithoutAttendanceInfo(CURRENT_YEAR, NEXT_JANUARY, EXPECTED_MONTHS);
 
         assertEquals(getYearMonths(CURRENT_YEAR, FEBRUARY, APRIL, JUNE, OCTOBER, DECEMBER), monthsWithoutAttendanceInfo);
     }
 
+    private List<YearMonth> monthsWithoutAttendanceInfo(int year, YearMonth yearMonth, Set<Integer> expectedMonths) {
+        expect(dateTimeService.getCurrentMonth()).andReturn(yearMonth);
+        expect(attendanceRepository.findMonthsValuesWithAttendanceInfoByYear(year)).andReturn(expectedMonths);
+        replay();
+
+        return attendanceService.getMonthsWithoutAttendanceInfoByYear(year);
+    }
+
+    private List<YearMonth> monthsWithoutAttendanceInfoByYear(int year, YearMonth yearMonth) {
+        expect(dateTimeService.getCurrentMonth()).andReturn(yearMonth);
+        replay();
+
+        return attendanceService.getMonthsWithoutAttendanceInfoByYear(year);
+    }
+
     private List<YearMonth> getYearMonths(int year, Month... months) {
-        return stream(months).map(month -> of(year, month)).collect(Collectors.toList());
+        return stream(months).map(month -> YearMonth.of(year, month)).collect(Collectors.toList());
     }
 
     private HashSet<Integer> getSetOfMonthNumbers(Integer... numbers) {
