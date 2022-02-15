@@ -25,6 +25,7 @@ import ru.lanit.bpm.jedu.hrjedi.app.api.employee.EmployeeRegistrationException;
 import ru.lanit.bpm.jedu.hrjedi.app.api.employee.EmployeeService;
 import ru.lanit.bpm.jedu.hrjedi.domain.Employee;
 import ru.lanit.bpm.jedu.hrjedi.domain.security.Role;
+import ru.lanit.bpm.jedu.hrjedi.domain.security.RoleCount;
 import ru.lanit.bpm.jedu.hrjedi.domain.security.RoleName;
 import ru.lanit.bpm.jedu.hrjedi.domain.security.State;
 
@@ -73,6 +74,18 @@ public class EmployeeServiceImpl implements EmployeeService {
     @Override
     public List<Employee> getAll() {
         return employeeRepository.findAll();
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public List<Employee> getAllWithRoles() {
+        return employeeRepository.findAllWithRoles();
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public List<RoleCount> getNumberOfEmployeesByRole() {
+        return employeeRepository.countEmployeesByRole();
     }
 
     @Transactional(readOnly = true)

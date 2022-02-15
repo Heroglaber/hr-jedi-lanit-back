@@ -15,6 +15,7 @@ package ru.lanit.bpm.jedu.hrjedi.app.api.employee;
 
 import ru.lanit.bpm.jedu.hrjedi.adapter.restservice.dto.EmployeeDto;
 import ru.lanit.bpm.jedu.hrjedi.domain.Employee;
+import ru.lanit.bpm.jedu.hrjedi.domain.security.RoleCount;
 
 import java.util.List;
 import java.util.Set;
@@ -28,13 +29,17 @@ public interface EmployeeService {
 
     List<Employee> getAll();
 
+    List<Employee> getAllWithRoles();
+
+    List<RoleCount> getNumberOfEmployeesByRole();
+
     long getNumberOfAdmins();
 
     Employee save(Employee employee);
 
     void createEmployee(String login, String firstName, String patronymic, String lastName, String password, String email, Set<String> rolesStrings);
 
-    public void createEmployees(List<EmployeeDto> employeeDtoList);
+    void createEmployees(List<EmployeeDto> employeeDtoList);
 
     String generateSecurePassword();
 }
