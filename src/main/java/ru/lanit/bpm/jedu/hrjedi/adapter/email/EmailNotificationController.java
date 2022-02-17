@@ -91,7 +91,10 @@ public class EmailNotificationController {
     private String getFilledMessageTemplate(String templateSource, String... templateArguments) {
         try (InputStream templateStream = getClass().getResourceAsStream(templateSource)) {
             String template = IOUtils.toString(templateStream, StandardCharsets.UTF_8);
-            return String.format(template, templateArguments);
+            template = template.replace("%1s", templateArguments[0]);
+            template = template.replace("%2s", templateArguments[1]);
+            template = template.replace("%3s", templateArguments[2]);
+            return template;
         } catch (IOException e) {
             throw new IllegalStateException(String.format("Error occurred while trying to access the message template located at %s", templateSource), e);
         }
