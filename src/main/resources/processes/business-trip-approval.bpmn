@@ -1,0 +1,254 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn2:definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:bpmn2="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" id="sample-diagram" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="4.12.0" xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL BPMN20.xsd">
+  <bpmn2:process id="business-trip-approval" isExecutable="true">
+    <bpmn2:startEvent id="StartEvent_business_trip" name="Заявка создана">
+      <bpmn2:extensionElements>
+        <camunda:executionListener delegateExpression="${businessTripApprovalStarted}" event="start" />
+      </bpmn2:extensionElements>
+      <bpmn2:outgoing>SequenceFlow_0x2uekh</bpmn2:outgoing>
+    </bpmn2:startEvent>
+    <bpmn2:sequenceFlow id="SequenceFlow_0x2uekh" sourceRef="StartEvent_business_trip" targetRef="IntermediateThrowEvent__business_trip_1" />
+    <bpmn2:userTask id="prepare-request" name="Заполнить заявку на командировку" camunda:formKey="business-trip-approval:prepare-request" camunda:assignee="${initiatorLogin}">
+      <bpmn2:extensionElements>
+        <camunda:taskListener delegateExpression="${businessTripApprovalCommonTaskCreate}" event="create" />
+        <camunda:taskListener delegateExpression="${businessTripApprovalPrepareRequestComplete}" event="complete" />
+      </bpmn2:extensionElements>
+      <bpmn2:incoming>SequenceFlow_1ircahn</bpmn2:incoming>
+      <bpmn2:outgoing>SequenceFlow_0fqenv0</bpmn2:outgoing>
+    </bpmn2:userTask>
+    <bpmn2:userTask id="approve-request" name="Выбрать отель" camunda:formKey="business-trip-approval:approve-request" camunda:assignee="${approverLogin}">
+      <bpmn2:extensionElements>
+        <camunda:taskListener delegateExpression="${businessTripApprovalCommonTaskCreate}" event="create" />
+        <camunda:taskListener delegateExpression="${businessTripApprovalApproveRequestComplete}" event="complete" />
+      </bpmn2:extensionElements>
+      <bpmn2:incoming>SequenceFlow_1n3hi8t</bpmn2:incoming>
+      <bpmn2:outgoing>SequenceFlow_0q3b7s5</bpmn2:outgoing>
+    </bpmn2:userTask>
+    <bpmn2:exclusiveGateway id="ExclusiveGateway__business_trip_3" name="Отель соответствует бюджету?">
+      <bpmn2:incoming>SequenceFlow_0q3b7s5</bpmn2:incoming>
+      <bpmn2:outgoing>SequenceFlow_130j72h</bpmn2:outgoing>
+      <bpmn2:outgoing>SequenceFlow_07httwo</bpmn2:outgoing>
+    </bpmn2:exclusiveGateway>
+    <bpmn2:sequenceFlow id="SequenceFlow_0q3b7s5" sourceRef="approve-request" targetRef="ExclusiveGateway__business_trip_3" />
+    <bpmn2:sequenceFlow id="SequenceFlow_130j72h" name="Да" sourceRef="ExclusiveGateway__business_trip_3" targetRef="IntermediateThrowEvent__business_trip_4">
+      <bpmn2:conditionExpression xsi:type="bpmn2:tFormalExpression">${lastAction == 'approve'}</bpmn2:conditionExpression>
+    </bpmn2:sequenceFlow>
+    <bpmn2:intermediateThrowEvent id="IntermediateThrowEvent__business_trip_3" name="Выбор отеля">
+      <bpmn2:extensionElements>
+        <camunda:executionListener event="start">
+          <camunda:script scriptFormat="groovy">execution.getProcessInstance().setVariable("status", "На согласовании");</camunda:script>
+        </camunda:executionListener>
+      </bpmn2:extensionElements>
+      <bpmn2:incoming>SequenceFlow_1x5270c</bpmn2:incoming>
+      <bpmn2:outgoing>SequenceFlow_1n3hi8t</bpmn2:outgoing>
+    </bpmn2:intermediateThrowEvent>
+    <bpmn2:sequenceFlow id="SequenceFlow_1n3hi8t" sourceRef="IntermediateThrowEvent__business_trip_3" targetRef="approve-request" />
+    <bpmn2:intermediateThrowEvent id="IntermediateThrowEvent__business_trip_1" name="Новая">
+      <bpmn2:extensionElements>
+        <camunda:executionListener event="start">
+          <camunda:script scriptFormat="groovy">execution.getProcessInstance().setVariable("status", "Новая");</camunda:script>
+        </camunda:executionListener>
+      </bpmn2:extensionElements>
+      <bpmn2:incoming>SequenceFlow_0x2uekh</bpmn2:incoming>
+      <bpmn2:outgoing>SequenceFlow_1nkz5oy</bpmn2:outgoing>
+    </bpmn2:intermediateThrowEvent>
+    <bpmn2:sequenceFlow id="SequenceFlow_1nkz5oy" sourceRef="IntermediateThrowEvent__business_trip_1" targetRef="ExclusiveGateway__business_trip_1" />
+    <bpmn2:intermediateThrowEvent id="IntermediateThrowEvent__business_trip_4" name="Согласована">
+      <bpmn2:extensionElements>
+        <camunda:executionListener event="start">
+          <camunda:script scriptFormat="groovy">execution.getProcessInstance().setVariable("status", "Согласована");</camunda:script>
+        </camunda:executionListener>
+      </bpmn2:extensionElements>
+      <bpmn2:incoming>SequenceFlow_130j72h</bpmn2:incoming>
+      <bpmn2:outgoing>SequenceFlow_1ooogri</bpmn2:outgoing>
+    </bpmn2:intermediateThrowEvent>
+    <bpmn2:intermediateThrowEvent id="IntermediateThrowEvent__business_trip_5" name="Уточнение бюджета">
+      <bpmn2:extensionElements>
+        <camunda:executionListener event="start">
+          <camunda:script scriptFormat="groovy">execution.getProcessInstance().setVariable("status", "На уточнении");</camunda:script>
+        </camunda:executionListener>
+      </bpmn2:extensionElements>
+      <bpmn2:incoming>SequenceFlow_07httwo</bpmn2:incoming>
+      <bpmn2:outgoing>SequenceFlow_0k4f63u</bpmn2:outgoing>
+    </bpmn2:intermediateThrowEvent>
+    <bpmn2:sequenceFlow id="SequenceFlow_0k4f63u" sourceRef="IntermediateThrowEvent__business_trip_5" targetRef="ExclusiveGateway__business_trip_1" />
+    <bpmn2:endEvent id="EndEvent__business_trip_1" name="Заявка отменена">
+      <bpmn2:incoming>SequenceFlow_1tvnk0n</bpmn2:incoming>
+    </bpmn2:endEvent>
+    <bpmn2:sequenceFlow id="SequenceFlow_0fqenv0" sourceRef="prepare-request" targetRef="ExclusiveGateway__business_trip_2" />
+    <bpmn2:intermediateThrowEvent id="IntermediateThrowEvent__business_trip_2" name="Не актуальна">
+      <bpmn2:extensionElements>
+        <camunda:executionListener event="start">
+          <camunda:script scriptFormat="groovy">execution.getProcessInstance().setVariable("status", "canceled");</camunda:script>
+        </camunda:executionListener>
+      </bpmn2:extensionElements>
+      <bpmn2:incoming>SequenceFlow_1cczbe4</bpmn2:incoming>
+      <bpmn2:outgoing>SequenceFlow_1tvnk0n</bpmn2:outgoing>
+    </bpmn2:intermediateThrowEvent>
+    <bpmn2:sequenceFlow id="SequenceFlow_1tvnk0n" sourceRef="IntermediateThrowEvent__business_trip_2" targetRef="EndEvent__business_trip_1" />
+    <bpmn2:exclusiveGateway id="ExclusiveGateway__business_trip_2" name="Отправлена на выбор отеля?">
+      <bpmn2:incoming>SequenceFlow_0fqenv0</bpmn2:incoming>
+      <bpmn2:outgoing>SequenceFlow_1x5270c</bpmn2:outgoing>
+      <bpmn2:outgoing>SequenceFlow_1cczbe4</bpmn2:outgoing>
+    </bpmn2:exclusiveGateway>
+    <bpmn2:sequenceFlow id="SequenceFlow_1x5270c" name="Да" sourceRef="ExclusiveGateway__business_trip_2" targetRef="IntermediateThrowEvent__business_trip_3">
+      <bpmn2:conditionExpression xsi:type="bpmn2:tFormalExpression">${lastAction == 'submit'}</bpmn2:conditionExpression>
+    </bpmn2:sequenceFlow>
+    <bpmn2:sequenceFlow id="SequenceFlow_1cczbe4" name="Нет" sourceRef="ExclusiveGateway__business_trip_2" targetRef="IntermediateThrowEvent__business_trip_2">
+      <bpmn2:conditionExpression xsi:type="bpmn2:tFormalExpression">${lastAction == 'cancel'}</bpmn2:conditionExpression>
+    </bpmn2:sequenceFlow>
+    <bpmn2:exclusiveGateway id="ExclusiveGateway__business_trip_1">
+      <bpmn2:incoming>SequenceFlow_1nkz5oy</bpmn2:incoming>
+      <bpmn2:incoming>SequenceFlow_0k4f63u</bpmn2:incoming>
+      <bpmn2:outgoing>SequenceFlow_1ircahn</bpmn2:outgoing>
+    </bpmn2:exclusiveGateway>
+    <bpmn2:sequenceFlow id="SequenceFlow_1ircahn" sourceRef="ExclusiveGateway__business_trip_1" targetRef="prepare-request" />
+    <bpmn2:endEvent id="EndEvent__business_trip_2" name="Заявка заполнена">
+      <bpmn2:incoming>SequenceFlow_1ooogri</bpmn2:incoming>
+    </bpmn2:endEvent>
+    <bpmn2:sequenceFlow id="SequenceFlow_1ooogri" sourceRef="IntermediateThrowEvent__business_trip_4" targetRef="EndEvent__business_trip_2" />
+    <bpmn2:sequenceFlow id="SequenceFlow_07httwo" name="Нет" sourceRef="ExclusiveGateway__business_trip_3" targetRef="IntermediateThrowEvent__business_trip_5">
+      <bpmn2:conditionExpression xsi:type="bpmn2:tFormalExpression">${lastAction == 'reject'}</bpmn2:conditionExpression>
+    </bpmn2:sequenceFlow>
+  </bpmn2:process>
+  <bpmn2:message id="Message_0zh4aor" name="Revoke" />
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="business-trip-approval">
+      <bpmndi:BPMNEdge id="SequenceFlow_07httwo_di" bpmnElement="SequenceFlow_07httwo">
+        <di:waypoint x="950" y="335" />
+        <di:waypoint x="950" y="470" />
+        <di:waypoint x="718" y="470" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="960" y="349" width="20" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_1ooogri_di" bpmnElement="SequenceFlow_1ooogri">
+        <di:waypoint x="1078" y="310" />
+        <di:waypoint x="1132" y="310" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_1ircahn_di" bpmnElement="SequenceFlow_1ircahn">
+        <di:waypoint x="395" y="310" />
+        <di:waypoint x="440" y="310" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_1cczbe4_di" bpmnElement="SequenceFlow_1cczbe4">
+        <di:waypoint x="610" y="285" />
+        <di:waypoint x="610" y="208" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="620" y="254" width="20" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_1x5270c_di" bpmnElement="SequenceFlow_1x5270c">
+        <di:waypoint x="635" y="310" />
+        <di:waypoint x="692" y="310" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="657" y="292" width="14" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_1tvnk0n_di" bpmnElement="SequenceFlow_1tvnk0n">
+        <di:waypoint x="610" y="172" />
+        <di:waypoint x="610" y="118" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_0fqenv0_di" bpmnElement="SequenceFlow_0fqenv0">
+        <di:waypoint x="540" y="310" />
+        <di:waypoint x="585" y="310" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_0k4f63u_di" bpmnElement="SequenceFlow_0k4f63u">
+        <di:waypoint x="682" y="470" />
+        <di:waypoint x="370" y="470" />
+        <di:waypoint x="370" y="335" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_1nkz5oy_di" bpmnElement="SequenceFlow_1nkz5oy">
+        <di:waypoint x="308" y="310" />
+        <di:waypoint x="345" y="310" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_1n3hi8t_di" bpmnElement="SequenceFlow_1n3hi8t">
+        <di:waypoint x="728" y="310" />
+        <di:waypoint x="780" y="310" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_130j72h_di" bpmnElement="SequenceFlow_130j72h">
+        <di:waypoint x="975" y="310" />
+        <di:waypoint x="1042" y="310" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="979" y="292" width="14" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_0q3b7s5_di" bpmnElement="SequenceFlow_0q3b7s5">
+        <di:waypoint x="880" y="310" />
+        <di:waypoint x="925" y="310" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_0x2uekh_di" bpmnElement="SequenceFlow_0x2uekh">
+        <di:waypoint x="218" y="310" />
+        <di:waypoint x="272" y="310" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="StartEvent_business_trip">
+        <dc:Bounds x="182" y="292" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="161" y="335" width="80" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="UserTask_0yers3t_di" bpmnElement="prepare-request">
+        <dc:Bounds x="440" y="270" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="UserTask_1dkf7hl_di" bpmnElement="approve-request">
+        <dc:Bounds x="780" y="270" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="ExclusiveGateway_1bc3ojx_di" bpmnElement="ExclusiveGateway__business_trip_3" isMarkerVisible="true">
+        <dc:Bounds x="925" y="285" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="913" y="240" width="73" height="40" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="IntermediateThrowEvent_0ybspe9_di" bpmnElement="IntermediateThrowEvent__business_trip_3">
+        <dc:Bounds x="692" y="292" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="678" y="335" width="66" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="IntermediateThrowEvent_0222ylo_di" bpmnElement="IntermediateThrowEvent__business_trip_1">
+        <dc:Bounds x="272" y="292" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="275" y="335" width="32" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="IntermediateThrowEvent_1mdyabp_di" bpmnElement="IntermediateThrowEvent__business_trip_4">
+        <dc:Bounds x="1042" y="292" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1027" y="335" width="67" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="IntermediateThrowEvent_1wmarn8_di" bpmnElement="IntermediateThrowEvent__business_trip_5">
+        <dc:Bounds x="682" y="452" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="673" y="495" width="54" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="EndEvent_1093ysn_di" bpmnElement="EndEvent__business_trip_1">
+        <dc:Bounds x="592" y="82" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="503" y="123" width="88" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="IntermediateThrowEvent_1hsq1js_di" bpmnElement="IntermediateThrowEvent__business_trip_2">
+        <dc:Bounds x="592" y="172" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="525" y="203" width="70" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="ExclusiveGateway_0knu8lu_di" bpmnElement="ExclusiveGateway__business_trip_2" isMarkerVisible="true">
+        <dc:Bounds x="585" y="285" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="571" y="342" width="78" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="ExclusiveGateway_10q0w50_di" bpmnElement="ExclusiveGateway__business_trip_1" isMarkerVisible="true">
+        <dc:Bounds x="345" y="285" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="EndEvent_06w5zq4_di" bpmnElement="EndEvent__business_trip_2">
+        <dc:Bounds x="1132" y="292" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1124" y="335" width="54" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn2:definitions>
