@@ -47,6 +47,7 @@ import java.nio.file.Paths;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/hr-rest/employees")
@@ -123,6 +124,14 @@ public class EmployeeController {
     @PreAuthorize("hasRole('OMNI') or hasRole('ADMIN')")
     public List<Employee> getAll() {
         return employeeService.getAll();
+    }
+
+    @GetMapping("/businessTrip")
+    @PreAuthorize("hasRole('HR')")
+    public List<Employee> getAllExceptCurrent(@RequestAttribute String currentUser) {
+        return employeeService.getAll().stream()
+            .filter(e -> !e.getLogin().equals(currentUser))
+            .collect(Collectors.toList());
     }
 
     @GetMapping("/{employeeLogin}/fullName")

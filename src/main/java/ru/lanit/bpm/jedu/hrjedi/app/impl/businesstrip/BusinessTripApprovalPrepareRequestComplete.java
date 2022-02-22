@@ -15,10 +15,9 @@ package ru.lanit.bpm.jedu.hrjedi.app.impl.businesstrip;
 
 import org.camunda.bpm.engine.delegate.DelegateTask;
 import org.springframework.stereotype.Component;
-import ru.lanit.bpm.jedu.hrjedi.app.impl.vacation.VacationApprovalCommonTaskComplete;
 
 @Component("businessTripApprovalPrepareRequestComplete")
-public class BusinessTripApprovalPrepareRequestComplete extends VacationApprovalCommonTaskComplete {
+public class BusinessTripApprovalPrepareRequestComplete extends BusinessTripApprovalCommonTaskComplete {
 
     @Override
     public void notify(DelegateTask task) {

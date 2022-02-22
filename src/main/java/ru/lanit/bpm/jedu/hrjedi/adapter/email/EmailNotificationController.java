@@ -18,6 +18,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
+import ru.lanit.bpm.jedu.hrjedi.domain.BusinessTrip;
 import ru.lanit.bpm.jedu.hrjedi.domain.Employee;
 import ru.lanit.bpm.jedu.hrjedi.domain.Vacation;
 
@@ -50,6 +51,8 @@ public class EmailNotificationController {
     private static final String HRJEDI_LOGO_CID = "hrjedilogo";
     private static final String VACATION_APPROVAL_MESSAGE_TEMPLATE_SOURCE = "/templates/mail-html/vacation-approval.html";
     private static final String VACATION_APPROVAL_MESSAGE_SUBJECT = "Заявка на отпуск %s-%s одобрена";
+    private static final String BUSINESS_TRIP_APPROVAL_MESSAGE_TEMPLATE_SOURCE = "/templates/mail-html/business-trip-approval.html";
+    private static final String BUSINESS_TRIP_APPROVAL_MESSAGE_SUBJECT = "Подтвердите командировку на даты %s-%s";
 
     @Value("${ru.lanit.bpm.jedu.hrjedi.email.mode}")
     private String emailSendingMode;
@@ -75,8 +78,8 @@ public class EmailNotificationController {
         String vacationStartString = approvedVacation.getStart().format(DAY_FORMATTER);
         String vacationEndString = approvedVacation.getEnd().format(DAY_FORMATTER);
         try {
-            String body = getFilledMessageTemplate(VACATION_APPROVAL_MESSAGE_TEMPLATE_SOURCE, employeeFirstName, vacationStartString, vacationEndString);
-            String subject = String.format(VACATION_APPROVAL_MESSAGE_SUBJECT, vacationStartString, vacationEndString);
+            String body = getFilledMessageTemplate(BUSINESS_TRIP_APPROVAL_MESSAGE_TEMPLATE_SOURCE, employeeFirstName, vacationStartString, vacationEndString);
+            String subject = String.format(BUSINESS_TRIP_APPROVAL_MESSAGE_SUBJECT, vacationStartString, vacationEndString);
             List<String> recipientsEmails = singletonList(employee.getEmail());
             List<MimeBodyPart> messageContent = asList(createHtmlBodyPart(body), createImageWithContentIdBodyPart(HRJEDI_LOGO_SOURCE, HRJEDI_LOGO_CID));
 
@@ -86,6 +89,28 @@ public class EmailNotificationController {
                 String.format("Error during sending vacation approval for employee - %s and vacation - %s", employee.getLogin(), approvedVacation.getId()), e);
         }
         LOGGER.info("Notification of employee {} on vacation approval completed successfully", employee.getLogin());
+    }
+
+    public void notifyOnBusinessTripApproval(BusinessTrip businessTrip) {
+        Employee employee = businessTrip.getEmployee();
+
+        LOGGER.info("Attemping to notify {} on business trip approval", employee.getLogin());
+
+        String employeeFirstName = employee.getFirstName();
+        String vacationStartString = businessTrip.getStart().format(DAY_FORMATTER);
+        String vacationEndString = businessTrip.getEnd().format(DAY_FORMATTER);
+        try {
+            String body = getFilledMessageTemplate(VACATION_APPROVAL_MESSAGE_TEMPLATE_SOURCE, employeeFirstName, vacationStartString, vacationEndString);
+            String subject = String.format(VACATION_APPROVAL_MESSAGE_SUBJECT, vacationStartString, vacationEndString);
+            List<String> recipientsEmails = singletonList(employee.getEmail());
+            List<MimeBodyPart> messageContent = asList(createHtmlBodyPart(body), createImageWithContentIdBodyPart(HRJEDI_LOGO_SOURCE, HRJEDI_LOGO_CID));
+
+            //sendMultipartEmailMessage(applicationEmailAddress, recipientsEmails, subject, messageContent);
+        } catch (MessagingException e) {
+            throw new IllegalStateException(
+                String.format("Error during sending business trip approval for employee - %s and business trip - %s", employee.getLogin(), businessTrip.getId()), e);
+        }
+        LOGGER.info("Notification of employee {} on business trip approval completed successfully", employee.getLogin());
     }
 
     private String getFilledMessageTemplate(String templateSource, String... templateArguments) {
