@@ -36,7 +36,7 @@
     <bpmn2:intermediateThrowEvent id="IntermediateThrowEvent__business_trip_3" name="Выбор отеля">
       <bpmn2:extensionElements>
         <camunda:executionListener event="start">
-          <camunda:script scriptFormat="groovy">execution.getProcessInstance().setVariable("status", "На согласовании");</camunda:script>
+          <camunda:script scriptFormat="groovy">execution.getProcessInstance().setVariable("status", "Выбор отеля");</camunda:script>
         </camunda:executionListener>
       </bpmn2:extensionElements>
       <bpmn2:incoming>SequenceFlow_1x5270c</bpmn2:incoming>
@@ -65,7 +65,7 @@
     <bpmn2:intermediateThrowEvent id="IntermediateThrowEvent__business_trip_5" name="Уточнение бюджета">
       <bpmn2:extensionElements>
         <camunda:executionListener event="start">
-          <camunda:script scriptFormat="groovy">execution.getProcessInstance().setVariable("status", "На уточнении");</camunda:script>
+          <camunda:script scriptFormat="groovy">execution.getProcessInstance().setVariable("status", "Уточнение бюджета");</camunda:script>
         </camunda:executionListener>
       </bpmn2:extensionElements>
       <bpmn2:incoming>SequenceFlow_07httwo</bpmn2:incoming>

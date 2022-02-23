@@ -26,7 +26,8 @@ public class BusinessTripApprovalCommonTaskCreate extends AbstractDelegate imple
             "processName", "processName",
             "status", "processStatus",
             "initiatorLogin", "initiatorLogin",
-            "businessTrip", "businessTrip"
+            "businessTrip", "businessTrip",
+            "hotel", "hotel"
         );
     }
 }

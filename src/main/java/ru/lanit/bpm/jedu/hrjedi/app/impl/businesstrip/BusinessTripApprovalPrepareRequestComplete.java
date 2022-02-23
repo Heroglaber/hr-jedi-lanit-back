@@ -15,6 +15,8 @@ package ru.lanit.bpm.jedu.hrjedi.app.impl.businesstrip;
 
 import org.camunda.bpm.engine.delegate.DelegateTask;
 import org.springframework.stereotype.Component;
+import ru.lanit.bpm.jedu.hrjedi.domain.BusinessTrip;
+import ru.lanit.bpm.jedu.hrjedi.domain.Employee;
 
 @Component("businessTripApprovalPrepareRequestComplete")
 public class BusinessTripApprovalPrepareRequestComplete extends BusinessTripApprovalCommonTaskComplete {
@@ -23,8 +25,13 @@ public class BusinessTripApprovalPrepareRequestComplete extends BusinessTripAppr
     public void notify(DelegateTask task) {
         super.notify(task);
 
+        BusinessTrip businessTrip = getTaskVariable(task, "businessTrip");
+        Employee employee = businessTrip.getEmployee();
+        setProcessVariable(task, "approverLogin", employee.getLogin());
+
         if ("submit".equals(getTaskVariable(task, "action"))) {
             mapFromTaskToProcess(task, "businessTrip", "businessTrip");
+            mapFromTaskToProcess(task, "hotel", "hotel");
         }
     }
 }

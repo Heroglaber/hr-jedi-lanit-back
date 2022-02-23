@@ -21,6 +21,7 @@ import ru.lanit.bpm.jedu.hrjedi.app.api.datetime.DateTimeService;
 import ru.lanit.bpm.jedu.hrjedi.app.api.employee.EmployeeService;
 import ru.lanit.bpm.jedu.hrjedi.domain.BusinessTrip;
 import ru.lanit.bpm.jedu.hrjedi.domain.Employee;
+import ru.lanit.bpm.jedu.hrjedi.domain.Hotel;
 
 import java.time.LocalDate;
 
@@ -44,6 +45,7 @@ public class BusinessTripApprovalStarted implements JavaDelegate {
         String initiatorLogin = getInitiatorLogin();
         Employee employee = employeeService.findByLogin(initiatorLogin);
         BusinessTrip businessTrip = createDefaultBusinessTripForEmployee(employee);
+        Hotel hotel = createDefaultHotelForBusinessTrip();
         Employee approver = employeeService.findWellKnownEmployeeHeadOfHr();
         String businessKey = getBusinessKey(process);
 
@@ -53,6 +55,7 @@ public class BusinessTripApprovalStarted implements JavaDelegate {
         process.setVariable("processName", getProcessName(employee));
         process.setVariable("processBusinessKey", businessKey);
         process.setVariable("businessTrip", businessTrip);
+        process.setVariable("hotel", hotel);
     }
 
     // ===================================================================================================================
@@ -73,6 +76,13 @@ public class BusinessTripApprovalStarted implements JavaDelegate {
         businessTrip.setBudget(0);
 
         return businessTrip;
+    }
+
+    private Hotel createDefaultHotelForBusinessTrip() {
+        Hotel hotel = new Hotel();
+        hotel.setName("ffdfdf");
+        hotel.setPrice(69);
+        return hotel;
     }
 
     private String getBusinessKey(DelegateExecution process) {

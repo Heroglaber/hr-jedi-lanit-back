@@ -18,6 +18,11 @@ import org.springframework.stereotype.Component;
 import ru.lanit.bpm.jedu.hrjedi.adapter.email.EmailNotificationController;
 import ru.lanit.bpm.jedu.hrjedi.app.api.businessTrip.BusinessTripService;
 import ru.lanit.bpm.jedu.hrjedi.domain.BusinessTrip;
+import ru.lanit.bpm.jedu.hrjedi.domain.Hotel;
+
+import java.time.LocalDate;
+
+import static java.time.temporal.ChronoUnit.DAYS;
 
 @Component("businessTripApprovalApproveRequestComplete")
 public class BusinessTripApprovalApproveRequestComplete extends BusinessTripApprovalCommonTaskComplete {
@@ -34,10 +39,26 @@ public class BusinessTripApprovalApproveRequestComplete extends BusinessTripAppr
     public void notify(DelegateTask task) {
         super.notify(task);
 
-        if ("approve".equals(getTaskVariable(task, "action"))) {
-            BusinessTrip approvedBusinessTrip = getTaskVariable(task, "businessTrip");
-            businessTripService.saveBusinessTrip(approvedBusinessTrip);
-            notificationController.notifyOnBusinessTripApproval(approvedBusinessTrip);
+        Hotel hotel = getTaskVariable(task, "hotel");
+        BusinessTrip businessTrip = getTaskVariable(task, "businessTrip");
+        long nigthsAmount = nightsAmount(businessTrip.getStart(), businessTrip.getEnd());
+        long hotelReservationCost = сalculateHotelReservationCost(hotel.getPrice(), nigthsAmount);
+        if(hotelReservationCost > businessTrip.getBudget()) {
+            setTaskVariable(task, "action", "reject");
+            setProcessVariable(task, "lastAction", "reject");
         }
+
+        if ("approve".equals(getTaskVariable(task, "action"))) {
+            businessTripService.saveBusinessTrip(businessTrip);
+            notificationController.notifyOnBusinessTripApproval(businessTrip);
+        }
+    }
+
+    private long nightsAmount(LocalDate dateBefore, LocalDate dateAfter) {
+        return DAYS.between(dateBefore, dateAfter);
+    }
+
+    private long сalculateHotelReservationCost(long costPerNight, long nightsAmount) {
+        return costPerNight * nightsAmount;
     }
 }

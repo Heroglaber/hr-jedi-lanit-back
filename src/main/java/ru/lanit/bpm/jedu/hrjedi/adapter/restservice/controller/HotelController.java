@@ -19,7 +19,7 @@ public class HotelController {
     }
 
     @GetMapping()
-    @PreAuthorize("hasRole('OMNI') or hasRole('ADMIN') or hasRole('HR')")
+    @PreAuthorize("hasRole('OMNI') or hasRole('ADMIN') or hasRole('HR') or hasRole('USER')")
     public List<Hotel> getAll() {
         return hotelService.getAll();
     }
