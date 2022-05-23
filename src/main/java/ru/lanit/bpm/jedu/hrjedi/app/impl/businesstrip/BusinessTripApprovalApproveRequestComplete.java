@@ -18,6 +18,7 @@ import org.springframework.stereotype.Component;
 import ru.lanit.bpm.jedu.hrjedi.adapter.email.EmailNotificationController;
 import ru.lanit.bpm.jedu.hrjedi.app.api.businessTrip.BusinessTripService;
 import ru.lanit.bpm.jedu.hrjedi.domain.BusinessTrip;
+import ru.lanit.bpm.jedu.hrjedi.domain.Employee;
 import ru.lanit.bpm.jedu.hrjedi.domain.Hotel;
 
 import java.time.LocalDate;
@@ -26,12 +27,10 @@ import static java.time.temporal.ChronoUnit.DAYS;
 
 @Component("businessTripApprovalApproveRequestComplete")
 public class BusinessTripApprovalApproveRequestComplete extends BusinessTripApprovalCommonTaskComplete {
-    private EmailNotificationController notificationController;
     private BusinessTripService businessTripService;
 
     public BusinessTripApprovalApproveRequestComplete(EmailNotificationController notificationController,
         BusinessTripService businessTripService) {
-        this.notificationController = notificationController;
         this.businessTripService = businessTripService;
     }
 
@@ -46,11 +45,11 @@ public class BusinessTripApprovalApproveRequestComplete extends BusinessTripAppr
         if(hotelReservationCost > businessTrip.getBudget()) {
             setTaskVariable(task, "action", "reject");
             setProcessVariable(task, "lastAction", "reject");
+            setProcessVariable(task, "processName", getProcessName(businessTrip.getEmployee()));
         }
 
         if ("approve".equals(getTaskVariable(task, "action"))) {
             businessTripService.saveBusinessTrip(businessTrip);
-            notificationController.notifyOnBusinessTripApproval(businessTrip);
         }
     }
 
@@ -60,5 +59,9 @@ public class BusinessTripApprovalApproveRequestComplete extends BusinessTripAppr
 
     private long сalculateHotelReservationCost(long costPerNight, long nightsAmount) {
         return costPerNight * nightsAmount;
+    }
+
+    private String getProcessName(Employee approver) {
+        return "Повторное согласование командировки: " + approver.getFullName();
     }
 }

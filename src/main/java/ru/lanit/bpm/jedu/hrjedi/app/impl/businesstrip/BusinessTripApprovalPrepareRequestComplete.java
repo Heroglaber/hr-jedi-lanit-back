@@ -15,11 +15,17 @@ package ru.lanit.bpm.jedu.hrjedi.app.impl.businesstrip;
 
 import org.camunda.bpm.engine.delegate.DelegateTask;
 import org.springframework.stereotype.Component;
+import ru.lanit.bpm.jedu.hrjedi.adapter.email.EmailNotificationController;
 import ru.lanit.bpm.jedu.hrjedi.domain.BusinessTrip;
 import ru.lanit.bpm.jedu.hrjedi.domain.Employee;
 
 @Component("businessTripApprovalPrepareRequestComplete")
 public class BusinessTripApprovalPrepareRequestComplete extends BusinessTripApprovalCommonTaskComplete {
+    private EmailNotificationController notificationController;
+
+    public BusinessTripApprovalPrepareRequestComplete(EmailNotificationController notificationController) {
+        this.notificationController = notificationController;
+    }
 
     @Override
     public void notify(DelegateTask task) {
@@ -32,6 +38,7 @@ public class BusinessTripApprovalPrepareRequestComplete extends BusinessTripAppr
         if ("submit".equals(getTaskVariable(task, "action"))) {
             mapFromTaskToProcess(task, "businessTrip", "businessTrip");
             mapFromTaskToProcess(task, "hotel", "hotel");
+            notificationController.notifyOnBusinessTripApproval(businessTrip);
         }
     }
 }

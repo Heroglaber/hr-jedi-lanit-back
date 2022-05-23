@@ -20,6 +20,8 @@ camunda.bpm:
     lastName: Camunda
   job-execution:
     enabled: true
+    max-wait: 3000
+    deployment-aware: false
   id-generator: simple
 
 # JMS Connection
@@ -48,8 +50,10 @@ ru:
             mode: off
             mailAddress: yourEmail@lanit.ru #Attention: DO NOT commit your email
             smtp:
-              host: mail.lan.lanit.ru
-              port: 25
+              host: mail-m2.lan.lanit.ru
+              port: 587
+          commandLineArg:
+            mailPassword: lsain$69891
 
 # logging
 logging:

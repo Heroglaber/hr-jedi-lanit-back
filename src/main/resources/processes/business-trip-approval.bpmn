@@ -110,6 +110,21 @@
     <bpmn2:sequenceFlow id="SequenceFlow_07httwo" name="Нет" sourceRef="ExclusiveGateway__business_trip_3" targetRef="IntermediateThrowEvent__business_trip_5">
       <bpmn2:conditionExpression xsi:type="bpmn2:tFormalExpression">${lastAction == 'reject'}</bpmn2:conditionExpression>
     </bpmn2:sequenceFlow>
+    <bpmn2:serviceTask id="Activity_0oh053g" name="Отправить повторное сообщение" camunda:delegateExpression="${businessTripApprovalSendSecondEmail}">
+      <bpmn2:incoming>Flow_1udz1dl</bpmn2:incoming>
+      <bpmn2:outgoing>Flow_0qvs5cv</bpmn2:outgoing>
+    </bpmn2:serviceTask>
+    <bpmn2:endEvent id="Event_0qfah0f">
+      <bpmn2:incoming>Flow_0qvs5cv</bpmn2:incoming>
+    </bpmn2:endEvent>
+    <bpmn2:sequenceFlow id="Flow_0qvs5cv" sourceRef="Activity_0oh053g" targetRef="Event_0qfah0f" />
+    <bpmn2:boundaryEvent id="Event_0pmcw6l" cancelActivity="false" attachedToRef="prepare-request">
+      <bpmn2:outgoing>Flow_1udz1dl</bpmn2:outgoing>
+      <bpmn2:timerEventDefinition id="TimerEventDefinition_0rsw22g">
+        <bpmn2:timeDuration xsi:type="bpmn2:tFormalExpression">PT20S</bpmn2:timeDuration>
+      </bpmn2:timerEventDefinition>
+    </bpmn2:boundaryEvent>
+    <bpmn2:sequenceFlow id="Flow_1udz1dl" sourceRef="Event_0pmcw6l" targetRef="Activity_0oh053g" />
   </bpmn2:process>
   <bpmn2:message id="Message_0zh4aor" name="Revoke" />
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
@@ -180,6 +195,15 @@
         <di:waypoint x="218" y="310" />
         <di:waypoint x="272" y="310" />
       </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_0qvs5cv_di" bpmnElement="Flow_0qvs5cv">
+        <di:waypoint x="370" y="170" />
+        <di:waypoint x="328" y="170" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_1udz1dl_di" bpmnElement="Flow_1udz1dl">
+        <di:waypoint x="490" y="252" />
+        <di:waypoint x="490" y="170" />
+        <di:waypoint x="470" y="170" />
+      </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="StartEvent_business_trip">
         <dc:Bounds x="182" y="292" width="36" height="36" />
         <bpmndi:BPMNLabel>
@@ -248,6 +272,15 @@
         <bpmndi:BPMNLabel>
           <dc:Bounds x="1124" y="335" width="54" height="27" />
         </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Activity_0oh053g_di" bpmnElement="Activity_0oh053g">
+        <dc:Bounds x="370" y="130" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0qfah0f_di" bpmnElement="Event_0qfah0f">
+        <dc:Bounds x="292" y="152" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_0pmcw6l_di" bpmnElement="Event_0pmcw6l">
+        <dc:Bounds x="472" y="252" width="36" height="36" />
       </bpmndi:BPMNShape>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>

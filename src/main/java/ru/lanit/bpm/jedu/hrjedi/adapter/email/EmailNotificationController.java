@@ -106,6 +106,9 @@ public class EmailNotificationController {
             List<MimeBodyPart> messageContent = asList(createHtmlBodyPart(body), createImageWithContentIdBodyPart(HRJEDI_LOGO_SOURCE, HRJEDI_LOGO_CID));
 
             //sendMultipartEmailMessage(applicationEmailAddress, recipientsEmails, subject, messageContent);
+            System.out.println("=========================================");
+            System.out.println("Email sended in " + java.time.LocalDate.now());
+            System.out.println("=========================================");
         } catch (MessagingException e) {
             throw new IllegalStateException(
                 String.format("Error during sending business trip approval for employee - %s and business trip - %s", employee.getLogin(), businessTrip.getId()), e);
